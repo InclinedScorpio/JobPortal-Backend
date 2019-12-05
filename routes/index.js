@@ -1,12 +1,12 @@
 const express=require("express");
 const router=express.Router();
-const authController=require("../controller/authController"); 
+const { signup }=require("../controller/authController"); 
 
 
 // router.get("/",(req,res)=>{
 //     res.send("asd");
 // });
-router.post("/signup",authController.signup);
+router.post("/signup", signup);
 
 // router.post("/signup",indexController.post_signup_page);
 

@@ -8,6 +8,8 @@ const app=express();
 const bodyParser=require("body-parser");
 const morgan=require("morgan")//for logging activities
 const responseProvider=require("./middlewares/ResponseProvider");
+const dotenv = require("dotenv");
+dotenv.config()
 
 app.use(morgan("dev"));
 app.use(responseProvider);
@@ -48,6 +50,6 @@ app.use("/",indexRoutes);
 // });
 
 
-app.listen(4000,()=>{
-    console.log('the server started!')
+app.listen(process.env.PORT,()=>{
+    console.log('the server started!', process.env.PORT)
 })

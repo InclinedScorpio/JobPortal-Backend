@@ -1,26 +1,17 @@
 // const User=require("../models/User");
 const express=require("express");
 const app=express();
-const authServices=require("../services/authServices");
+const { authSignup } =require("../services/authServices");
 
 
 
 let signup = async (req,res,next) => {
-    //send only required info
-    
-    let userdetails={
-        username: req.body.username,
-        password: req.body.password,
-        role: parseInt(req.body.role),
-        name: req.body.name
-    }
-    //send to authServices...
 
-    let userData=await authServices.signup(userdetails); 
+    let userData=await authSignup(req.body); 
     if(userData.token==null){
-        res.error(userData,409,userData.message);
+        res.error(422,"unprocessabele entity",userData);
     }else{
-        res.success(userData,200,"User Created Successfully");
+        res.success(200,"Success",userData);
     }
 }
 

@@ -21,6 +21,8 @@
     "mysql3": "^0.4.6",
     "objection": "^2.0.0",
     "uuid": "^3.3.3",
+    "validator": "^12.1.0",
+    "validator.js": "^2.0.3",
     "validatorjs": "^3.18.1"
   }
 }

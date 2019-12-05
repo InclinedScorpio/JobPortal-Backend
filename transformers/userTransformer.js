@@ -2,7 +2,8 @@
 let validUser=(userData)=>{
    usertransformdata={
        username:userData.username,
-       token:userData.token
+       token:userData.token,
+       code:200
    }
     return usertransformdata;
 }
