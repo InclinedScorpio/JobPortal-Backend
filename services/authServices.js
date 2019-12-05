@@ -4,15 +4,15 @@ const UserRepo = require('../repo/UserRepo');
 const uservalidator=require("../validators/userValidator");
 const transformer=require("../transformers/userTransformer");
 const jwt=require("jsonwebtoken");
-//importing all models CHECK
+const User=require("../models/User");
 
 // const Job=require("../models/Job");
-const User=require("../models/User");
 // const Application=require("../modelsApplication");
 
 const userRepo = new UserRepo(User);
 
 //all methods inside will be async as having await(because further calling async)
+//Also because we want to wait till it completes the work.
 module.exports={
   authSignup: async(signupData)=>{
 
@@ -30,19 +30,21 @@ module.exports={
   //validation passed
       let isUserExist=await userRepo.findByUsername(signupData.username);
       if(isUserExist.length>0){
-          return {
+          let temp={
             code:422,
             field:"username",
-            message:"Username Already Exists",
+            result:"Username Already Exists",
             token:null
-          };            
+          };
+          return temp;
+                      
       }
       //ELSE PART
       const alpha=await userRepo.create(signupData);
 
       const token=jwt.sign(
-        {username:signupData.username, userid:signupData.uuid},
-          "asddd",{ expiresIn:"500h" });
+      {username:signupData.username, userid:signupData.uuid},
+      "asddd",{ expiresIn:"500h" });
 
       signupData["token"]=token;
       const userdata= transformer.validUser(signupData);
@@ -52,41 +54,49 @@ module.exports={
       return validatedresponse;
     }
     // candidateRepo.insert(signupdata);
-  }
+  },
 
 
+  //SIGN IN FOR USER --------------------------------------------------------------
+  //-------------------------------------------------------------------------------
 
+  authSignin: async (signinData)=>{
+ 
+            let validateData=uservalidator.signupValidate(signinData);
 
-  // signin: async(signinData)=>{
-  //           const username=signinData.username;
-  //           const password=signinData.password;
-        
-  //           //CHECKING USERNAME AND PASSWORD
-  //           const userfound=await User.query()
-  //           .select("password")
-  //           .where("username",username);
-        
-  //           if(userfound>0){ //USERNAME EXIST !
-  //           const userfoundpass=userfound[0].password;
-        
-  //               bcrypt.compare(password, userfoundpass, function(err, res) {
-  //                   if(res==true){ //PASSWORD IS CORRECT !
-  //                       res.status(200).json({
-  //                           message: "User successully logged in"
-  //                       });
-  //                   }else{ //PASSWORD IS WRONG !
-  //                       res.status(404).json({
-  //                           message:"Auth failed -> Wrong password entered"
-  //                       });
-  //                   }
-  //               });
-  //          }else{
-  //              res.status(404).json({
-  //                   message:"Auth failed -> No username exist"
-  //              });
-  //          }
-  // }
+            if(!validateData.value){
+              return validateData;
+            }
 
+            let isUserExist=await userRepo.findOne('username',signinData.username);
 
+            if(isUserExist){//USER EXISTS!
+              //check username and password
+              console.log(isUserExist)
+              const hash=isUserExist.password;
+               const result = await bcrypt.compare(signinData.password, hash);
+                  
+                  if(result==true){//grant login
+
+                    let token=jwt.sign({ userid:isUserExist.uuid,role:isUserExist.role}
+                    ,"asddd",{expiresIn:"500h"});
+                    isUserExist["token"]=token;
+                    let userData=transformer.validSignIn(isUserExist);
+                    return await userData;
+                  }else{//USER WRONG CREDENTIALS
+                    return {
+                      code:401,
+                      error:"unauthorized access",
+                      value:false,
+                    };
+                  }
+            }else{//NO SUCH USERNAME
+              return {
+                code:404,
+                error:"user doesn't exists",
+                value:false
+              }
+            }
+   }
 }//module exports
 

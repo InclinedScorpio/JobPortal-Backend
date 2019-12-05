@@ -106,6 +106,59 @@ module.exports = {
                 value: true,
             }
         }
+    },
+//SIGNIN VALIDATION----------------------------------------------------------
+
+    signupValidate:(user)=>{
+        let errors=[];
+        if(user.username===undefined){
+            errors.push({
+               "code":401,
+               "field":"username",
+               "message":"username is required" 
+            }); 
+        }
+
+        else if(validator.isEmpty(user.username)){
+            errors.push({
+                "code":401,
+                "field":"username",
+                "message":"username can't be empty"
+            });
+        }
+        
+        else if(!validator.isEmail(user.username)){
+            errors.push({
+                "code":401,
+                "field":"username",
+                "message":"recheck your email"
+            });
+        }
+
+        if(user.password===undefined){
+            errors.push({
+                "code":401,
+                "field":"password",
+                "message":"password is required | undefined"
+            });
+        }
+        else if(validator.isEmpty(user.password)){
+            errors.push({
+                "code":401,
+                "field":"password",
+                "message":"password is required | can't be empty"
+            });
+        }
+       if(errors.length>0){
+           return{
+               value:false,
+               error:errors
+           }
+       }else{
+           return{
+               value:true
+           }
+       }
     }
 }
 
@@ -113,3 +166,9 @@ module.exports = {
 
 
   
+
+/***
+ * Validator - passes/ fails , obj
+ * 
+ * 
+ */

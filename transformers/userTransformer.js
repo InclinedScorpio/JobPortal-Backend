@@ -7,9 +7,22 @@ let validUser=(userData)=>{
    }
     return usertransformdata;
 }
+validSignIn=(userData)=>{
+    usertransformdata={
+        userid:userData.uuid,
+        username:userData.username,
+        name:userData.name,
+        role:userData.role,
+        token:userData.token,
+        value:true
+    }
+    return usertransformdata;
+}
+
 
 
 module.exports={
-    validUser
+    validUser,
+    validSignIn
 }
 
