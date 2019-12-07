@@ -22,7 +22,7 @@ class BaseRepo {
 
     
     async checkAuthData(username,password){
-        let extractedusers=this.model.query()
+        let extractedusers=await this.model.query()
         .where("username",username)
         .where("password",password);
 
@@ -30,26 +30,20 @@ class BaseRepo {
     }
 
     async getUserPassword(username){
-        let extractedusers=this.model.query()
+        let extractedusers=await this.model.query()
         .where("username",username);
 
         return extractedusers.password;
     }
 
-    // async create(data){
-    //     return await this.model.create(data);
-    // }
+    async getNameById(userId){
+        let name=await this.model.query()
+        .where("user_id",userId);
+        return name[0].name;
+    }
 
-    // async signup(username,password){ WILL COME IN CANDIDATE REPO
-       
-    //     const newUser=await this.model.query().insert({  //changes
-    //         uuid:uuidnew,
-    //         name:name,
-    //         username:username,
-    //         password:hashedpassword,
-    //         role:role       
-    //      }); 
-    // }
+   
+
 }
 
 module.exports=BaseRepo;

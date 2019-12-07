@@ -7,7 +7,8 @@ let validUser=(userData)=>{
    }
     return usertransformdata;
 }
-validSignIn=(userData)=>{
+
+let validSignIn=(userData)=>{
     usertransformdata={
         userid:userData.uuid,
         username:userData.username,
@@ -19,10 +20,29 @@ validSignIn=(userData)=>{
     return usertransformdata;
 }
 
+let appliedCandidates=(candidateData)=>{
+    transformeddata={
+        name:candidateData.name,
+        username:candidateData.username,
+        candidateId:candidateData.uuid,
+    }
+    return transformeddata;
+}
+
 
 
 module.exports={
     validUser,
-    validSignIn
+    validSignIn,
+    appliedCandidates
 }
+
+/***
+ * picking up the correct attributes,
+ * {
+ * error: true/ false,
+ * result: {actual result}
+ * }
+ * 
+ */
 

@@ -23,6 +23,18 @@ class Job extends Model {
                 to: "users.user_id"
             }
         },
+        candidates: {
+          relation: Model.ManyToManyRelation,
+          modelClass: User,
+          join: {
+            from: "jobs.job_id",
+            through: {
+              from: "applications.job_id",
+              to: "applications.user_id",
+            },
+            to: "users.user_id"
+          }
+        },
         applications: {
             relation:Model.HasManyRelation,
             modelClass: Application,

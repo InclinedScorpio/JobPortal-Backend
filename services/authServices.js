@@ -43,8 +43,8 @@ module.exports={
       const alpha=await userRepo.create(signupData);
 
       const token=jwt.sign(
-      {username:signupData.username, userid:signupData.uuid},
-      "asddd",{ expiresIn:"500h" });
+      {role:signupData.role, userid:signupData.uuid},
+      "asddd",{ expiresIn:"1h" });
 
       signupData["token"]=token;
       const userdata= transformer.validUser(signupData);
@@ -78,7 +78,7 @@ module.exports={
                   
                   if(result==true){//grant login
 
-                    let token=jwt.sign({ userid:isUserExist.uuid,role:isUserExist.role}
+                    let token=jwt.sign({ role:isUserExist.role,userid:isUserExist.uuid}
                     ,"asddd",{expiresIn:"500h"});
                     isUserExist["token"]=token;
                     let userData=transformer.validSignIn(isUserExist);

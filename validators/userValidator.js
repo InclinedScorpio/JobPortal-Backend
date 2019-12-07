@@ -168,7 +168,8 @@ module.exports = {
   
 
 /***
- * Validator - passes/ fails , obj
+ * Validator - passes/ fails , obj=[]
+ * 
  * 
  * 
  */

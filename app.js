@@ -9,27 +9,31 @@ const bodyParser=require("body-parser");
 const morgan=require("morgan")//for logging activities
 const responseProvider=require("./middlewares/ResponseProvider");
 const dotenv = require("dotenv");
-dotenv.config()
+dotenv.config()//for configuring dotenv file
 
 app.use(morgan("dev"));
 app.use(responseProvider);
 
-// const applicantRoutes=require("./routes/applicant");
 // const adminRoutes=require("./routes/admin");
-// const employerRoutes=require("./routes/employer");
 // const jobRoutes=require("./routes/job");
 // const applicationRoutes=require("./routes/application");
 
 const indexRoutes=require("./routes/index");
+const candidate=require("./routes/candidate");
+const recruiterRoutes=require("./routes/recruiter");
+const jobRoute=require('./routes/job');
 
-// app.use("/applicant",applicantRoutes);
-// app.use("/admin",adminRoutes);
-// app.use("/employer",employerRoutes);
+
+// app.use("/",candidate);
+// // app.use("/admin",adminRoutes);
+// app.use("/",recruiter);
 // app.use("/job",jobRoutes);
 // app.use("/application",applicationRoutes);
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());//put body-parser middleware initially so that before forwarding the request it is present beforehand to us !!
 app.use("/",indexRoutes);
+app.use('/jobs',jobRoute);
+
 
 
 
