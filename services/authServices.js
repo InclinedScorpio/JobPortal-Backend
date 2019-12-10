@@ -9,6 +9,8 @@ const sendMail=require("../utilities/sendMail");//for smtp mail
 const  otplib=require("otplib");//to get otp
 const User=require("../models/User");
 const otpRepo=require("../repo/otpRepo");
+const dotenv = require('dotenv');
+dotenv.config();
 
 
 // const Job=require("../models/Job");
@@ -25,15 +27,11 @@ module.exports={
     let validatedresponse=uservalidator.newAccount(signupData);
 
     if(validatedresponse.value){
-    //replace password with hashed password and insert user-uuid
     const hash = await bcrypt.hash(signupData.password, 10);
-    // console.log(hash)
     signupData.password = hash;
     signupData.uuid=uuid();
-    // ->calling userValidator.js file
 
-    // console.log(signupData)
-  //validation passed
+ 
       let isUserExist=await userRepo.findByUsername(signupData.username);
       if(isUserExist.length>0){
           let temp={
@@ -50,11 +48,13 @@ module.exports={
 
       const token=jwt.sign(
       {role:signupData.role, userid:signupData.uuid},
-      "asddd",{ expiresIn:"1h" });
+      process.env.JWT_PASS,{ expiresIn:"1h"});
 
       signupData["token"]=token;
       const userdata= transformer.validUser(signupData);
       return userdata;
+
+
 
     }else{
       return validatedresponse;
@@ -78,14 +78,13 @@ module.exports={
 
             if(isUserExist){//USER EXISTS!
               //check username and password
-              console.log(isUserExist)
               const hash=isUserExist.password;
                const result = await bcrypt.compare(signinData.password, hash);
                   
                   if(result==true){//grant login
 
                     let token=jwt.sign({ role:isUserExist.role,userid:isUserExist.uuid}
-                    ,"asddd",{expiresIn:"500h"});
+                    ,process.env.JWT_PASS,{expiresIn:"500h"});
                     isUserExist["token"]=token;
                     let userData=transformer.validSignIn(isUserExist);
                     return await userData;
@@ -126,7 +125,7 @@ module.exports={
       }
     }
     //email exists--Generate OTP--------------------
-    const secret = 'QWERTY';
+    const secret = process.env.OTP_SECRET;
     const token = parseInt(otplib.authenticator.generate(secret));
     //insert the token in db
     const saveOTP=await OtpRepo.saveOTP(token,userName);
@@ -149,7 +148,6 @@ module.exports={
     //check if everything there.->Validator
 
     let verifiedData=uservalidator.checkResetData(resetData);
-    console.log("############",verifiedData.validator);
     if(!verifiedData.validator){
         return{
           error:"Data can't be verified",

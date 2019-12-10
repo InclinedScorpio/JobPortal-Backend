@@ -4,7 +4,6 @@ const validator=require("validatorjs");
 module.exports={
 
     checkPassedUUID:(uuid)=>{
-        console.log("DDFFGGSSAAAAAA");
         rule={
             Uuid: 'required',      
         }

@@ -5,10 +5,11 @@ const knex = require('knex');
 
 const KnexConfig = require('../knexfile');
 
-Model.knex(knex(KnexConfig.development));
+const { BaseModel } = require("./BaseModel");
 
+BaseModel.knex(knex(KnexConfig.development));
 
-class Job extends Model {
+class Job extends BaseModel {
   static get tableName() {
     return 'jobs';
   }
@@ -17,7 +18,7 @@ class Job extends Model {
     return {
         users: {
             relation: Model.BelongsToOneRelation,
-            modelClass: User,
+            modelClass: 'User',
             join: {
                 from: "jobs.recruiter_id",
                 to: "users.id"
@@ -25,7 +26,7 @@ class Job extends Model {
         },
         candidates: {
           relation: Model.ManyToManyRelation,
-          modelClass: User,
+          modelClass: 'User',
           join: {
             from: "jobs.id",
             through: {
@@ -37,7 +38,7 @@ class Job extends Model {
         },
         applications: {
             relation:Model.HasManyRelation,
-            modelClass: Application,
+            modelClass: 'Application',
             join: {
               from: "jobs.id",
               to: "applications.job_id"

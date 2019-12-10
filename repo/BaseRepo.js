@@ -7,6 +7,7 @@ class BaseRepo {
 
 
     async findOne(condition,username){
+        
         const extractedusers = await this.model.query().findOne({
             [condition]: username
         });
@@ -50,6 +51,17 @@ class BaseRepo {
 
         return users;
     }
+
+    async deleteByUuid(uuid){
+        let deletedRecord=await this.model.query()
+        .delete()
+        .where("uuid",uuid);
+            if(deletedRecord==0){
+                console.log("XXXX!!!XXXX:: no changes at  deletebyuuid");
+            }
+    }
+
+
 
    
 

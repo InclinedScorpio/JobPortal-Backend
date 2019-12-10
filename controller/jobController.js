@@ -42,10 +42,6 @@ const appliedJobs=async(req,res,next)=>{
 
 
 
-// const submitJob=async(req,res,next)=>{
-
-// }
-
 module.exports = {
     getAllJobs,
     applyToJob,

@@ -6,12 +6,12 @@ const{
 
 const{
     extractedCandidates,
+    deleteCandidate
 }=require("../controller/adminController");
 
 
-//COMPLETE??CHECK
 router.get("/",authControl,isAdmin,extractedCandidates);
-// router.get("/:candidate_id/jobs",authControl,isAdmin,getJobsByCandidate);  
+router.delete("/:candidate_id",authControl,isAdmin,deleteCandidate); 
 
 
 

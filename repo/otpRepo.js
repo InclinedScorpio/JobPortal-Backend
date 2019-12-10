@@ -8,7 +8,6 @@ class otpRepo extends BaseRepo{
     }
 
     async saveOTP(otp,userName){
-        // console.log("**&&&*******************",otp,userName);
         let save=await this.model.query()
         .insert({
             email:userName,

@@ -5,8 +5,7 @@ const {
 
   const getCandidates=async(req,res,next)=>{
     let jobUuid=req.params.job_id;
-    // let recruiterUuid=req.headerData.userid;
-    // console.log("INSIIIDEE APPLICATIONCONTROLLERR");
+    
     let extractedApplications=await getApplications(jobUuid);
     if(extractedApplications.validator){
         res.success(200,"Success",extractedApplications);

@@ -1,7 +1,7 @@
 
 exports.up = function(knex) {
     return knex.schema.alterTable("users",table=>{
-        table.foreign('id').onDelete('CASCADE').references('user_id')
+        table.foreign('applications.user_id').onDelete('CASCADE').references('id')
     });
 };
 

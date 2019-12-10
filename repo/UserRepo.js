@@ -6,7 +6,6 @@ class UserRepo extends BaseRepo{
     }
 
     async create(data){
-        console.log("inside repo",data);
         return await this.model.query().insert(data);
      }
 

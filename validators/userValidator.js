@@ -189,15 +189,12 @@ module.exports = {
             otp:parseInt(resetData.otp),
             password:resetData.password
         }
-        console.log("^^^^^^^^^^^^",data);
         rule={
             username:"required|email",
             otp:"required|min:1",
             password:"required"
         }
         let validation = new validatorjs(data, rule);
-        console.log("TRUE----",validation.passes());
-        // console.log(validation.errors.first('username'));
         if(validation.passes()){
             return{
                 validator:true

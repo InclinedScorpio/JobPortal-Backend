@@ -6,9 +6,7 @@ class ApplicationRepo extends BaseRepo{
         super(Model);
     }
 
-    async getAppliedJobs(candidateId){ //ID is user id...
-        // console.log("INSIDE RE{PPPPO",candidateId);
-        //select those jobs from jobs in which user didn't applied(application)
+    async getAppliedJobs(candidateId){ 
         let jobFromApplication=await this.model.query()
         .where("user_id",candidateId)
         .select("job_id");
@@ -25,7 +23,6 @@ class ApplicationRepo extends BaseRepo{
             job_id:jobId,
             uuid:uuid
         });
-        console.log("AAADEEEEEDDDD",addedApplication);
         return addedApplication;
     }
 
@@ -51,8 +48,38 @@ class ApplicationRepo extends BaseRepo{
         return applications;
     }
 
+    async deleteByUserId(id){
+        let count=await this.model.query()
+        .where("user_id",id)
+        .delete();
 
-  
+        if(count==0){
+            console.log("XXXXX!!XXXX :: Query not running in deletebyuserid")
+        }
+
+    }
+
+    async deleteGivenJobs(jobs){
+        let count =await this.model.query()
+        .delete()
+        .whereIn("job_id",jobs);
+        
+        if(count==0){
+            console.log("XXX!!XXX:: Got 0 unchanged at deletegivenjobs");
+        }
+    }
+
+
+  async deleteAppByJobId(jobId){
+      let count=await this.model.query()
+      .delete()
+      .where("job_id",jobId);
+
+      if(count==0)
+      {
+          console.log("XXX!!XXX:: records unchanged in deleteappbyjobid");
+      }
+  }
 
 
 

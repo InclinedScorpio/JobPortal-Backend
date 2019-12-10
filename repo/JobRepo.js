@@ -10,16 +10,6 @@ class JobRepo extends BaseRepo{
         super(Model);
     }
 
-//refactor
-    async getAvailableJobs(appliedJobId){//got applied job id's
-        console.log(appliedJobId);
-        const check = [{"id": 1},{"id": 2}] 
-        let availableJobs=await this.model.query()
-        .whereNotIn("id",check) //don't show passed ID's(Already applied)
-        .select("id","job_title","job_description");
-
-        return availableJobs;
-    }
 
     async getAppliedJobs(candidateId){ //ID is user id...
 
@@ -37,12 +27,11 @@ class JobRepo extends BaseRepo{
         return jobsFromApplication;
     }
 
-    async getAvailableJobs(appliedJobs){
+    async getAvailableJobs(appliedJobs,pageDetails){
         let availableJobs=await this.model.query()
         .whereNotIn("id",appliedJobs)
-        .select("uuid","job_title","job_description");
+        .select("uuid","job_title","job_description").limit(parseInt(pageDetails.limit)).offset(parseInt(pageDetails.offset));
 
-        
         return availableJobs;
     }
 
@@ -65,14 +54,13 @@ class JobRepo extends BaseRepo{
     }
 
     async getJobDetailsByUuid(jobUuid){
-        let jobId=await this.model.query()
-        .where("uuid",jobUuid);
-        
+        let jobId=await this.model.query().findOne({
+            "uuid":jobUuid
+        });
         return jobId;
     }
-//??
+
     async postJobData(jobData){
-        // console.log("%%%%%%%%%%%%%%",jobData);
         let jobInserted=await this.model.query()
         .insert({
             recruiter_id:jobData.recruiterid.id, //refactor
@@ -83,13 +71,50 @@ class JobRepo extends BaseRepo{
     }
 
     async isJobExists(jobData){
-        // console.log("$$$$$$$$$$$",jobData.recruiterid.user_id);
         let getJob=await this.model.query()
         .where("recruiter_id",jobData.recruiterid.id)//changes done here check
         .where("job_title",jobData.title)
         .where("job_description",jobData.description);
 
         return getJob;
+    }
+
+    async getAllJobs(){
+        let allJobs=await this.model.query()
+        .select("job_title","job_description","uuid");
+
+        return allJobs;
+    }
+
+
+    async getJobByRecruiterId(recruiterId){
+        let jobs=await this.model.query()
+        .select("id")
+        .where("recruiter_id",recruiterId);
+
+        return jobs;
+    }
+
+
+    async deleteByRecruiterId(recruiterId){
+        let count=await this.model.query()
+        .delete()
+        .where("recruiter_id",recruiterId);
+           
+        if(count==0){
+            console.log("XXXX!!!XXXX::,no changes in deletebyrecruiterid");
+        }
+    }
+
+
+    async deleteJobByJobId(jobId){
+        let count= await this.model.query()
+        .delete()
+        .where("id",jobId);
+
+        if(count==0){
+            console.log("XXXX!!!XXXX::: no changes in record in deletejobbyjobid");
+        }
     }
 }
 

@@ -8,9 +8,12 @@ const {
 const{
     isCandidate,
     isRecruiter,
-    isAdminOrCandidate
+    isAdminOrCandidate,
+    isAdmin
 }=require("../middlewares/checkRole");
-
+const{
+    deleteJob
+}=require("../controller/adminController");
 
 
 const{
@@ -19,12 +22,14 @@ const{
 
 
 
-//router.get("/jobs",authControl,isAdminOrCandidate,getAllJobs)Admin is covered
-
-router.get("/:job_id/applications",authControl,isRecruiter,getCandidates);//ONLY RECRUITER
-router.post("/:job_id",authControl,isCandidate,applyToJob);//BY CANDIDATE ONLY
+router.get("/jobs",authControl,isAdminOrCandidate,getAllJobs);
+router.get("/:job_id/applications",authControl,isRecruiter,getCandidates);
+router.post("/:job_id",authControl,isCandidate,applyToJob);
 router.get("/",authControl,isAdminOrCandidate,getAllJobs);
-router.post("/",authControl,isRecruiter,postJob)//only by RECRUITER
+router.post("/",authControl,isRecruiter,postJob)
+router.delete("/:job_id",authControl,isAdmin,deleteJob);
+
+
 
 
 module.exports=router;

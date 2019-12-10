@@ -12,9 +12,7 @@ class Application extends Model {
   static get tableName() {
     return 'applications';
   }
-//BelongsToOneRelation when source model has the foreign key...
-//HasManyRelation when related model has the foreign key
-
+  
   static get relationMappings() {
     return {
         users: {

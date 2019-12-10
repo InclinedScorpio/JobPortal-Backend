@@ -26,7 +26,6 @@ module.exports={
             }
         }
         let job = await jobRepo.getJobIdByUuid(jobUuid);
-        // console.log("######",job);
         let candidates=await job.$relatedQuery("candidates");
        
         return{

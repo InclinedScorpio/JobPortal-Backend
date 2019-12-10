@@ -29,5 +29,76 @@ module.exports={
             data:allRecruiters,
             validator:true
         }
+    },
+
+    candidateDelete:async(userData)=>{
+        //check if uuid exists
+        let extractedCandidate=await userRepo.findOne("uuid",userData.candidate_id);
+        if(typeof(extractedCandidate)=="undefined"){
+                return{
+                    code:404,
+                    message:"candidate not found",
+                    validator:false
+
+                }
+        }
+        //if uuid is not of candidate
+        if(extractedCandidate.role!=0){
+            return{
+                code:404,
+                message:"id doesn't belong to a candidate",
+                validator:false
+            }
+        }
+        let saveCandidate=extractedCandidate;
+        //now delete the candidate
+        let deleteAppli=await applicationRepo.deleteByUserId(extractedCandidate.id);
+        let deleteUser=await userRepo.deleteByUuid(extractedCandidate.uuid);
+        return{
+            message:"candidate deleted successfully",
+            validator:true
+        };
+    },
+
+
+    recruiterDelete:async(userData)=>{
+        let extractedRecruiter=await userRepo.findOne("uuid",userData.recruiter_id);
+        if(typeof(extractedRecruiter)=="undefined"){
+                return{
+                    code:404,
+                    message:"Recruiter not found",
+                    validator:false
+
+                }
+        }
+        //if uuid is not of candidate
+        if(extractedRecruiter.role!=1){
+            return{
+                code:404,
+                message:"id doesn't belong to a recruiter",
+                validator:false
+            };
+        }
+        //id belongs to recruiter and present->extract jobs
+        let jobsofRecruiter=await jobRepo.getJobByRecruiterId(extractedRecruiter.id);
+        let arr=[];
+        for(let i=0;i<jobsofRecruiter.length;i++)
+        {
+            arr.push(jobsofRecruiter[i].id);
+        }
+        let deletedApplications=await applicationRepo.deleteGivenJobs(arr);
+        let deletedJobs=await jobRepo.deleteByRecruiterId(extractedRecruiter.id);
+        let deletedRecruiters=await userRepo.deleteByUuid(userData.recruiter_id);
+
+        return{
+            message:"Recruiter deleted successfully",
+            validator:true
+        }
+    
+    
     }
+
+
+
+    
 }

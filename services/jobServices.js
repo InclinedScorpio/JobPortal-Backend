@@ -14,19 +14,29 @@ applicationRepo=new ApplicationRepo(Application);
 
 module.exports={
     getJobs:async(user)=>{
-        console.log("$$$$$$$$$$$$$$$$GOT IT ");
+        //if admin
+        if(user.headerData.role==2){
+            let allJobs=await jobRepo.getAllJobs();
+            return{
+                data:allJobs
+            }
+
+        }
+        let page=user.query.page;//by user
+        let limit=user.query.limit;//by user 
+        let offset=(page-1)*limit;
+        let pageDetail={
+            limit:user.query.limit,
+            offset:offset
+        }
         let jobId=await userRepo.getIdByuuid(user.headerData.userid);//get id from uuid
-        console.log("&&&&&&&",jobId);
         let extractedJobs=await applicationRepo.getAppliedJobs(jobId.id);
-        console.log("^#5#$$$$$",extractedJobs);
         let arr=[];//to get Applied jobs;
         for(let i=0;i<extractedJobs.length;i++){     
                   arr.push(extractedJobs[i].job_id); }//refactor
 
-        // console.log(extractedJobs);
-        let availableJobs=await jobRepo.getAvailableJobs(arr);
+        let availableJobs=await jobRepo.getAvailableJobs(arr,pageDetail);
         return {
-        
              data:availableJobs            
         }
 
@@ -34,9 +44,7 @@ module.exports={
         
     //Candidate comes to apply
     applyForJob:async(jobUuid,userUuid)=>{
-        console.log(">>>>>",jobUuid);
         let jobId=await jobRepo.getJobDetailsByUuid(jobUuid);
-        console.log("<<<<<<<",jobId);
         if(typeof(jobId[0].id)==="undefined"){
             return{
                 error:"Job Doesn't Exist",
@@ -73,7 +81,11 @@ module.exports={
     postNewJob:async(recruiterId,jobData)=>{
         
         //DO VALIDATION ERROR HERE
-        let savedPassedData=jobData;
+        let savedPassedData={
+            title:jobData.title,
+            description:jobData.description,
+            uuid:jobData.uuid
+        }
         let recruiterID=await userRepo.getIdByuuid(recruiterId);
         jobData.recruiterid=recruiterID;
         //check if already data present.
@@ -91,10 +103,10 @@ module.exports={
             return {
                 error:"Job Already Posted",
                 validator:false,
-                data:savedPassedData //check if needed
             }
         }
         jobData.uuid=uuid();
+        savedPassedData["uuid"]=jobData.uuid;
         let jobPosted=await jobRepo.postJobData(jobData);
         return {
             data:savedPassedData,
@@ -106,14 +118,32 @@ module.exports={
     jobsApplied:async(candidateUuid)=>{
         
         let candidateId = await userRepo.getIdByuuid(candidateUuid);
-        console.log("JOBB SEERVICEs",candidateId);
         let jobs = await candidateId.$relatedQuery("appliedjobs");
-        console.log("%%%%",jobs);
         return {
             data:jobs,
             validator:true
         }
 
+    },
+
+    jobDelete:async(jobData)=>{
+
+        let job = await jobRepo.getJobDetailsByUuid(jobData.job_id);
+        if(typeof(job)=="undefined"){
+            return{
+                validator:false,
+                code:404,
+                message:"Job data not found"
+            }
+        }
+        let deletedApplications=await applicationRepo.deleteAppByJobId(job.id);
+        let deletedJobs=await jobRepo.deleteJobByJobId(job.id);
+        return{
+            message:"Job deleted successfully",
+            validator:true
+        }
+
+        
     }
 
     
