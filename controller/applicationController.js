@@ -6,7 +6,7 @@ const {
   const getCandidates=async(req,res,next)=>{
     let jobUuid=req.params.job_id;
     
-    let extractedApplications=await getApplications(jobUuid);
+    let extractedApplications=await getApplications(jobUuid,req);
     if(extractedApplications.validator){
         res.success(200,"Success",extractedApplications);
     }

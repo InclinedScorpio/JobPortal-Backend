@@ -44,10 +44,11 @@ class BaseRepo {
     }
 
 
-    async getUsersByRole(role){
+    async getUsersByRole(role,pageDetail){
         let users=await this.model.query()
         .where("role",role)
-        .select("uuid","name","username");
+        .select("uuid","name","username")
+        .page(pageDetail.page,pageDetail.limit);
 
         return users;
     }

@@ -15,19 +15,19 @@ const{
 
 
 const extractedApplications=async(req,res,next)=>{
-    const allApplications=await getAllApplications();
+    const allApplications=await getAllApplications(req);
     if(allApplications.validator){
         res.success(200,"Applications Retrieved",allApplications.data);
     }
 }
 const extractedCandidates=async(req,res,next)=>{
-    const allCandidates=await getAllCandidates();
+    const allCandidates=await getAllCandidates(req);
     if(allCandidates.validator){
         res.success(200,"Candidates Retrieved",allCandidates.data);
     }
 }
 const extractedRecruiters=async(req,res,next)=>{
-    const allRecruiters=await getAllRecruiters();
+    const allRecruiters=await getAllRecruiters(req);
 
     if(allRecruiters.validator){
         res.success(200,"Recruiters Retrieved",allRecruiters.data);

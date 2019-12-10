@@ -9,22 +9,57 @@ const ApplicationRepo=require("../repo/ApplicationRepo");
 const transformer=require("../transformers/userTransformer");
 
 const validator=require("../validators/candidateValidator");
+const pagination=require("../transformers/pagination");
+
 
 jobRepo=new JobRepo(Job);
 userRepo=new UserRepo(User);
 applicationRepo=new ApplicationRepo(Application);
 
 module.exports={
-    getAllCandidates:async()=>{
-        let allCandidates=await userRepo.getUsersByRole(0);
+    getAllCandidates:async(user)=>{
+
+        let page=user.query.page;//by user
+                let limit=user.query.limit;//by user 
+                let offset=(page)*limit;
+
+                let pageDetail={
+                    limit:parseInt(user.query.limit),
+                    page:parseInt(page),
+                    offset:parseInt(offset)
+                }
+
+
+        let allCandidates=await userRepo.getUsersByRole(0,pageDetail);
+
+        allCandidates["total"]=allCandidates.total;
+        allCandidates=pagination.paginateResponse(allCandidates,pageDetail);
+
+
+
         return {
             data:allCandidates,
             validator:true
         }
     },
 
-    getAllRecruiters:async()=>{
-        let allRecruiters=await userRepo.getUsersByRole(1);
+    getAllRecruiters:async(user)=>{
+        let page=user.query.page;//by user
+        let limit=user.query.limit;//by user 
+        let offset=(page)*limit;
+
+        let pageDetail={
+            limit:parseInt(user.query.limit),
+            page:parseInt(page),
+            offset:parseInt(offset)
+        }
+
+
+        let allRecruiters=await userRepo.getUsersByRole(1,pageDetail);
+        allRecruiters["total"]=allRecruiters.total;
+        allRecruiters=pagination.paginateResponse(allRecruiters,pageDetail);
+
+
         return {
             data:allRecruiters,
             validator:true

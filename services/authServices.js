@@ -59,7 +59,6 @@ module.exports={
     }else{
       return validatedresponse;
     }
-    // candidateRepo.insert(signupdata);
   },
 
 

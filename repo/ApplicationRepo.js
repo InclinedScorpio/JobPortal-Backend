@@ -42,8 +42,9 @@ class ApplicationRepo extends BaseRepo{
         return candidates;
     }
 
-    async getAllApplications(){
-        let applications=await this.model.query();
+    async getAllApplications(pageDetails){
+        let applications=await this.model.query()
+        .page(pageDetails.page,pageDetails.limit);
 
         return applications;
     }

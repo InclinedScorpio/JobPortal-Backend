@@ -7,6 +7,7 @@ const JobRepo =require("../repo/JobRepo");
 const UserRepo=require("../repo/UserRepo");
 const ApplicationRepo=require("../repo/ApplicationRepo");
 const validator=require("../validators/jobValidator");
+const pagination=require("../transformers/pagination");
 
 jobRepo=new JobRepo(Job);
 userRepo=new UserRepo(User);
@@ -16,7 +17,22 @@ module.exports={
     getJobs:async(user)=>{
         //if admin
         if(user.headerData.role==2){
-            let allJobs=await jobRepo.getAllJobs();
+
+            let page=user.query.page;//by user
+                let limit=user.query.limit;//by user 
+                let offset=(page)*limit;
+
+                let pageDetail={
+                    limit:parseInt(user.query.limit),
+                    page:parseInt(page),
+                    offset:parseInt(offset)
+                }
+
+              let allJobs=await jobRepo.getAllJobs(pageDetail);
+              allJobs["total"]=allJobs.total;
+              allJobs=pagination.paginateResponse(allJobs,pageDetail);
+      
+      
             return{
                 data:allJobs
             }
@@ -24,9 +40,11 @@ module.exports={
         }
         let page=user.query.page;//by user
         let limit=user.query.limit;//by user 
-        let offset=(page-1)*limit;
+        let offset=(page)*limit;
+
         let pageDetail={
             limit:user.query.limit,
+            page:page,
             offset:offset
         }
         let jobId=await userRepo.getIdByuuid(user.headerData.userid);//get id from uuid
@@ -36,6 +54,10 @@ module.exports={
                   arr.push(extractedJobs[i].job_id); }//refactor
 
         let availableJobs=await jobRepo.getAvailableJobs(arr,pageDetail);
+        availableJobs["total"]=availableJobs.total;
+        availableJobs=pagination.paginateResponse(availableJobs,pageDetail);
+
+
         return {
              data:availableJobs            
         }
@@ -45,18 +67,18 @@ module.exports={
     //Candidate comes to apply
     applyForJob:async(jobUuid,userUuid)=>{
         let jobId=await jobRepo.getJobDetailsByUuid(jobUuid);
-        if(typeof(jobId[0].id)==="undefined"){
+        if(typeof(jobId.id)==="undefined"){
             return{
                 error:"Job Doesn't Exist",
                 validator:false, 
             }
         }
-        let checkJobId=await jobRepo.idExists(jobId[0].id);//get id from object[0]
+        let checkJobId=await jobRepo.idExists(jobId.id);//get id from object[0]
        
         if(checkJobId.length>0){//if exists            
             let userId=await userRepo.getIdByuuid(userUuid);
             //check if already applied..if applied return.
-            let isApplicationExists=await applicationRepo.isApplicationExists(userId.id,jobId[0].id);//refactor
+            let isApplicationExists=await applicationRepo.isApplicationExists(userId.id,jobId.id);//refactor
             if(isApplicationExists.length>0){
                 return {
                     error:"Already Applied",
@@ -64,7 +86,7 @@ module.exports={
                 }
             }
             let generatedUuid=uuid();
-            let addedApplication=await applicationRepo.addApplication(userId.id,jobId[0].id,generatedUuid);//refactor
+            let addedApplication=await applicationRepo.addApplication(userId.id,jobId.id,generatedUuid);//refactor
             //transform data here Check ??????
             return{                
                 data:checkJobId,
@@ -115,13 +137,29 @@ module.exports={
     },
 
 
-    jobsApplied:async(candidateUuid)=>{
+    jobsApplied:async(candidateUuid,user)=>{
         
+        let page=user.query.page;//by user
+        let limit=user.query.limit;//by user 
+        let offset=(page)*limit;
+
+        let pageDetail={
+            limit:user.query.limit,
+            page:page,
+            offset:offset
+        }
         let candidateId = await userRepo.getIdByuuid(candidateUuid);
-        let jobs = await candidateId.$relatedQuery("appliedjobs");
+        let jobs = await candidateId.$relatedQuery("appliedjobs").page(parseInt(pageDetail.page),parseInt(pageDetail.limit));
+
+
+        jobs["total"]=jobs.total;
+        jobs=pagination.paginateResponse(jobs,pageDetail);
+        c
+
+
         return {
             data:jobs,
-            validator:true
+            validator:true,
         }
 
     },

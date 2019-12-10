@@ -33,7 +33,7 @@ const postJob = async (req,res,next)=>{
 
 const appliedJobs=async(req,res,next)=>{
   let candidateUuid=req.headerData.userid;
-  let getJobApplied=await jobsApplied(candidateUuid);
+  let getJobApplied=await jobsApplied(candidateUuid,req);
   if(getJobApplied.validator){
     res.success(200,"Successfully extracted Jobs",getJobApplied.data);
     }

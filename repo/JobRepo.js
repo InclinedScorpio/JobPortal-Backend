@@ -21,8 +21,7 @@ class JobRepo extends BaseRepo{
         let jobsFromApplication=await this.model.query()
         .leftJoin("applications","jobs.id","=","applications.job_id")
         .whereNotIn("applications.user_id",arr);
-        // .orWhereNull("applications.user_id")
-        // .orWhere("user_id",null);
+        
 
         return jobsFromApplication;
     }
@@ -30,8 +29,10 @@ class JobRepo extends BaseRepo{
     async getAvailableJobs(appliedJobs,pageDetails){
         let availableJobs=await this.model.query()
         .whereNotIn("id",appliedJobs)
-        .select("uuid","job_title","job_description").limit(parseInt(pageDetails.limit)).offset(parseInt(pageDetails.offset));
+        .select("uuid","job_title","job_description").page(pageDetails.page ,pageDetails.limit);
+        // .select("uuid","job_title","job_description").limit(parseInt(pageDetails.limit)).offset(parseInt(pageDetails.offset));
 
+        // console.log("$$$$$$$$$$$$$",availableJobs);
         return availableJobs;
     }
 
@@ -79,9 +80,10 @@ class JobRepo extends BaseRepo{
         return getJob;
     }
 
-    async getAllJobs(){
+    async getAllJobs(user){
         let allJobs=await this.model.query()
-        .select("job_title","job_description","uuid");
+        .select("job_title","job_description","uuid")
+        .page(user.page,user.limit);
 
         return allJobs;
     }

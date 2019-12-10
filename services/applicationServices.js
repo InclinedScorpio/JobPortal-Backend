@@ -7,6 +7,7 @@ const JobRepo =require("../repo/JobRepo");
 const UserRepo=require("../repo/UserRepo");
 const ApplicationRepo=require("../repo/ApplicationRepo");
 const transformer=require("../transformers/userTransformer");
+const pagination=require("../transformers/pagination");
 
 const validator=require("../validators/candidateValidator");
 
@@ -16,7 +17,18 @@ applicationRepo=new ApplicationRepo(Application);
 
 module.exports={
 
-    getApplications:async(jobUuid)=>{
+    getApplications:async(jobUuid,req)=>{
+
+        let page=user.query.page;//by user
+                let limit=user.query.limit;//by user 
+                let offset=(page)*limit;
+
+                let pageDetail={
+                    limit:parseInt(user.query.limit),
+                    page:parseInt(page),
+                    offset:parseInt(offset)
+                }
+
         //change uuid to ID
         let isUuidValid=validator.checkPassedUUID(jobUuid);
         if(isUuidValid.validator==false){
@@ -26,7 +38,11 @@ module.exports={
             }
         }
         let job = await jobRepo.getJobIdByUuid(jobUuid);
-        let candidates=await job.$relatedQuery("candidates");
+        let candidates=await job.$relatedQuery("candidates").page(pageDetail.page,pageDetail,limit);
+        candidates["total"]=candidates.total;
+        candidates=pagination.paginateResponse(candidates,pageDetail);
+
+
        
         return{
                 data:candidates,
@@ -36,7 +52,24 @@ module.exports={
 
     getAllApplications:async()=>{
 
-        let jobApplications=await applicationRepo.getAllApplications();
+        let page=user.query.page;//by user
+        let limit=user.query.limit;//by user 
+        let offset=(page)*limit;
+
+        let pageDetail={
+            limit:parseInt(user.query.limit),
+            page:parseInt(page),
+            offset:parseInt(offset)
+        }
+
+
+        let jobApplications=await applicationRepo.getAllApplications(pageDetail);
+
+
+        jobApplications["total"]=jobApplications.total;
+        jobApplications=pagination.paginateResponse(jobApplications,pageDetail);
+
+        
         return{
             data:jobApplications,
             validator:true
