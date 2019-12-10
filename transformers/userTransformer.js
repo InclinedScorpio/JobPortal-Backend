@@ -20,13 +20,15 @@ let validSignIn=(userData)=>{
     return usertransformdata;
 }
 
-let appliedCandidates=(candidateData)=>{
-    transformeddata={
-        name:candidateData.name,
-        username:candidateData.username,
-        candidateId:candidateData.uuid,
+
+let userDetailToAdmin=(userData)=>{
+    transformedUserData={
+        uuid:userData.uuid,
+        name:userData.name,
+        username:userData.username,
     }
-    return transformeddata;
+
+    return transformedUserData;
 }
 
 
@@ -34,7 +36,7 @@ let appliedCandidates=(candidateData)=>{
 module.exports={
     validUser,
     validSignIn,
-    appliedCandidates
+    userDetailToAdmin
 }
 
 /***

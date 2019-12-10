@@ -38,8 +38,17 @@ class BaseRepo {
 
     async getNameById(userId){
         let name=await this.model.query()
-        .where("user_id",userId);
+        .where("id",userId);
         return name[0].name;
+    }
+
+
+    async getUsersByRole(role){
+        let users=await this.model.query()
+        .where("role",role)
+        .select("uuid","name","username");
+
+        return users;
     }
 
    

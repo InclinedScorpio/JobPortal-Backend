@@ -6,6 +6,7 @@ const uuid=require("uuid/v1");
 const JobRepo =require("../repo/JobRepo");
 const UserRepo=require("../repo/UserRepo");
 const ApplicationRepo=require("../repo/ApplicationRepo");
+const validator=require("../validators/jobValidator");
 
 jobRepo=new JobRepo(Job);
 userRepo=new UserRepo(User);
@@ -13,16 +14,19 @@ applicationRepo=new ApplicationRepo(Application);
 
 module.exports={
     getJobs:async(user)=>{
+        console.log("$$$$$$$$$$$$$$$$GOT IT ");
         let jobId=await userRepo.getIdByuuid(user.headerData.userid);//get id from uuid
-
-        let extractedJobs=await applicationRepo.getAppliedJobs(jobId);
+        console.log("&&&&&&&",jobId);
+        let extractedJobs=await applicationRepo.getAppliedJobs(jobId.id);
+        console.log("^#5#$$$$$",extractedJobs);
         let arr=[];//to get Applied jobs;
         for(let i=0;i<extractedJobs.length;i++){     
-                  arr.push(extractedJobs[i].job_id); }
+                  arr.push(extractedJobs[i].job_id); }//refactor
 
         // console.log(extractedJobs);
         let availableJobs=await jobRepo.getAvailableJobs(arr);
         return {
+        
              data:availableJobs            
         }
 
@@ -30,15 +34,21 @@ module.exports={
         
     //Candidate comes to apply
     applyForJob:async(jobUuid,userUuid)=>{
+        console.log(">>>>>",jobUuid);
         let jobId=await jobRepo.getJobDetailsByUuid(jobUuid);
-        let checkJobId=await jobRepo.idExists(jobId[0].job_id);//get id from object[0]
+        console.log("<<<<<<<",jobId);
+        if(typeof(jobId[0].id)==="undefined"){
+            return{
+                error:"Job Doesn't Exist",
+                validator:false, 
+            }
+        }
+        let checkJobId=await jobRepo.idExists(jobId[0].id);//get id from object[0]
        
         if(checkJobId.length>0){//if exists            
-            console.log("111111111",checkJobId);
             let userId=await userRepo.getIdByuuid(userUuid);
-                 console.log("22222222",userId.user_id,"33333333",jobId[0].job_id);
             //check if already applied..if applied return.
-            let isApplicationExists=await applicationRepo.isApplicationExists(userId.user_id,jobId[0].job_id);
+            let isApplicationExists=await applicationRepo.isApplicationExists(userId.id,jobId[0].id);//refactor
             if(isApplicationExists.length>0){
                 return {
                     error:"Already Applied",
@@ -46,7 +56,7 @@ module.exports={
                 }
             }
             let generatedUuid=uuid();
-            let addedApplication=await applicationRepo.addApplication(userId.user_id,jobId[0].job_id,generatedUuid);
+            let addedApplication=await applicationRepo.addApplication(userId.id,jobId[0].id,generatedUuid);//refactor
             //transform data here Check ??????
             return{                
                 data:checkJobId,
@@ -67,6 +77,15 @@ module.exports={
         let recruiterID=await userRepo.getIdByuuid(recruiterId);
         jobData.recruiterid=recruiterID;
         //check if already data present.
+        //but first validate the data...
+        if(!(validator.validateJobData(jobData)).value){
+            return{
+                error:"title|description both are required",
+                validator:false
+            }
+        }
+
+
         let isJobExists=await jobRepo.isJobExists(jobData);
         if(isJobExists.length>0){//job already posted
             return {
@@ -89,13 +108,17 @@ module.exports={
         let candidateId = await userRepo.getIdByuuid(candidateUuid);
         console.log("JOBB SEERVICEs",candidateId);
         let jobs = await candidateId.$relatedQuery("appliedjobs");
-        console.log(jobs);
+        console.log("%%%%",jobs);
         return {
             data:jobs,
             validator:true
         }
 
     }
+
+    
+
+    
 
 
 }

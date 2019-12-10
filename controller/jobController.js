@@ -8,13 +8,12 @@ const {
 
 const getAllJobs = async (req, res, next) => {
   let jobData = await getJobs(req);
-  res.success(200, "Success", jobData);
+  res.success(200, "Success", jobData.data);
 };
 
 const applyToJob = async (req, res, next) => {
-  let jobId = req.params.id;
+  let jobId = req.params.job_id;
   let userId=req.headerData.userid;
-  console.log("&&&&&&&&&&&&&&",userId,"^^^^^^^jobid^",jobId);
   let jobDetails = await applyForJob(jobId,userId);
   if (jobDetails.validator) {
     res.success(200, "Successfully Applied", jobDetails.data);
@@ -35,7 +34,7 @@ const postJob = async (req,res,next)=>{
 const appliedJobs=async(req,res,next)=>{
   let candidateUuid=req.headerData.userid;
   let getJobApplied=await jobsApplied(candidateUuid);
-  if(getJobApplied.validaor){
+  if(getJobApplied.validator){
     res.success(200,"Successfully extracted Jobs",getJobApplied.data);
     }
     res.error(404,"Failed to extract Jobs");

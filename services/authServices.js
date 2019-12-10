@@ -4,12 +4,18 @@ const UserRepo = require('../repo/UserRepo');
 const uservalidator=require("../validators/userValidator");
 const transformer=require("../transformers/userTransformer");
 const jwt=require("jsonwebtoken");
+const Otp=require("../models/Otp");
+const sendMail=require("../utilities/sendMail");//for smtp mail 
+const  otplib=require("otplib");//to get otp
 const User=require("../models/User");
+const otpRepo=require("../repo/otpRepo");
+
 
 // const Job=require("../models/Job");
 // const Application=require("../modelsApplication");
 
 const userRepo = new UserRepo(User);
+const OtpRepo=new otpRepo(Otp);
 
 //all methods inside will be async as having await(because further calling async)
 //Also because we want to wait till it completes the work.
@@ -97,6 +103,107 @@ module.exports={
                 value:false
               }
             }
-   }
+   },
+
+   //---FORGET PASSWORD-----------------------------------------------------
+   //-----------------------------------------------------------------------
+
+
+   processUserDetails:async(userName)=>{
+    validateUsername=uservalidator.validateUser(userName);
+    if(!validateUsername.value){
+      return{
+        message:"Email is invalid, try again"
+      }
+    }
+
+      //check email exists
+    let isEmailExists=await userRepo.mailExists(userName);
+    if(isEmailExists.length<=0){
+      return{
+        message:"Email doesn't exist, please signup ",
+        value:false
+      }
+    }
+    //email exists--Generate OTP--------------------
+    const secret = 'QWERTY';
+    const token = parseInt(otplib.authenticator.generate(secret));
+    //insert the token in db
+    const saveOTP=await OtpRepo.saveOTP(token,userName);
+    let otpsent=await sendMail.sendEmailTo(userName,token);
+    return{
+      email:otpsent.email,
+      data:otpsent,
+      value:true
+    }
+
+  },
+
+
+
+  resetPass:async(resetData)=>{
+    let username=resetData.username;
+    let otp=resetData.otp;
+    let password=resetData.password;
+
+    //check if everything there.->Validator
+
+    let verifiedData=uservalidator.checkResetData(resetData);
+    console.log("############",verifiedData.validator);
+    if(!verifiedData.validator){
+        return{
+          error:"Data can't be verified",
+          value:false
+        }
+    }
+
+
+    //everything present check if email exist !
+    let EmailExists=await OtpRepo.checkUsernameAndOTP(username,otp);
+    if(typeof(EmailExists)=="undefined"){
+      return{
+        error:"OTP doesn't exists",
+        value:false
+      }
+    }
+
+    //check otp timings
+    var currentdatetime = new Date();
+    var otpdatetime = new Date(EmailExists.created_at);
+
+    if(EmailExists.otp!=otp){
+      return{
+        error:"OTP can't be verified, try again",
+        value:false
+      }
+    }
+    var diffHours = parseInt((currentdatetime - otpdatetime) / (1000 * 60 * 60));
+    if(diffHours>1){
+      let deleteOTP=await OtpRepo.removeOTP(username,otp);
+      return{
+        error:"OTP expired.",
+        value:false
+      }
+    }
+
+    //both username and otp exists!!
+    const hash = await bcrypt.hash(password, 10);
+    let storedData=await userRepo.updatePassword(hash,username);
+    let deleteOTP=await OtpRepo.removeAllOTP(username);
+    
+    return{
+      data:{
+      message:"Password updated Successfully",
+      email:username,
+      },
+      value:true
+    }
+
+
+
+
+  }
+
+
 }//module exports
 

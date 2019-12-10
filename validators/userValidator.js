@@ -2,6 +2,7 @@
     //just make functions and pass it using {} use validator
 // }
 var validator = require('validator');
+var validatorjs=require("validatorjs");
 // const {
 //     User,
 //     Job,
@@ -159,17 +160,59 @@ module.exports = {
                value:true
            }
        }
+    },
+
+    validateUser:(user)=>{
+        let data={
+            username:user
+        }
+        let rule={
+            username:"required|email"
+        }
+        let validation = new validatorjs(data, rule);
+        if(validation.passes()){
+            return{
+                value:true
+            }
+        }
+        return{
+            value:false
+        }
+
+    },
+
+
+    checkResetData:(resetData)=>{
+        
+        data={
+            username:resetData.username,
+            otp:parseInt(resetData.otp),
+            password:resetData.password
+        }
+        console.log("^^^^^^^^^^^^",data);
+        rule={
+            username:"required|email",
+            otp:"required|min:1",
+            password:"required"
+        }
+        let validation = new validatorjs(data, rule);
+        console.log("TRUE----",validation.passes());
+        // console.log(validation.errors.first('username'));
+        if(validation.passes()){
+            return{
+                validator:true
+            }
+        }
+        return{
+            validator:false
+        }
+    
+
     }
+
+
 }
 
 
 
 
-  
-
-/***
- * Validator - passes/ fails , obj=[]
- * 
- * 
- * 
- */

@@ -1,17 +1,28 @@
-const express=require("express");
-const router=express.Router();
-const { 
-    signup,
-    signin
- }=require("../controller/authController"); 
+const router=require("express").Router();
+const jobRoutes = require('./job');
+const candidateRoutes = require('./candidate');
+const recruiterRoutes = require('./recruiter');
+const applicationRoutes = require('./recruiter');
+const authRoutes=require("./auth");
 
 
+router.use('/jobs', jobRoutes);
+
+router.use('/candidates', candidateRoutes);
+
+router.use('/recruiters', recruiterRoutes);
+
+router.use('/applications', applicationRoutes);
+
+router.use("/",authRoutes);
+
+
+
+
+
+module.exports=router;
 
 
 
  
-router.post("/signup", signup);
 
-router.post("/signin",signin);
-
-module.exports=router;

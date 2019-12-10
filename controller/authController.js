@@ -2,7 +2,7 @@
 // const User=require("../models/User");
 const express=require("express");
 const app=express();
-const { authSignup,authSignin } =require("../services/authServices");
+const { authSignup,authSignin,processUserDetails,resetPass } =require("../services/authServices");
 
 
 
@@ -26,9 +26,33 @@ let signin= async (req,res,next) => {
     }
 }
 
+
+
+let forgetPassword=async (req,res,next)=>{
+    let username=req.body.username;
+    let checkAndReset=await processUserDetails(username);
+    if(checkAndReset.value){
+        res.success(202,"Otp sent Successfully",checkAndReset.data);
+    }
+    res.error(422,"Failed",checkAndReset.message);
+
+}
+
+let resetPassword=async(req,res,next)=>{
+    let resetResponse=await resetPass(req.body);
+    if(resetResponse.value){
+        res.success(200,"Success",resetResponse.data);
+    }
+    //ERROR ?? checkimm
+    res.error(404,"Error",resetResponse.error);
+}
+
+
 module.exports={
     signup,
-    signin
+    signin,
+    forgetPassword,
+    resetPassword
 };
 
 

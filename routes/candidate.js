@@ -1,24 +1,20 @@
-// const express=require("express");
-// const app=express();//parser already used in app.js as middleware.
-// const router=require("express").Router();
-// const {
-//     getJobs,//check and controller also CHECK
-//     getParticularJob
-// }=require("../controller/jobController");
-// const authControl=require("../middlewares/checkAuth");
-// const responseProvider=require("../middlewares/ResponseProvider");
+const router=require("express").Router();
+const authControl=require("../middlewares/checkAuth");
+const{
+  isAdmin,
+}=require("../middlewares/checkRole");
 
-// app.use(responseProvider);//check
+const{
+    extractedCandidates,
+}=require("../controller/adminController");
 
 
-// //remove jobs in which applied !
-// router.get("/jobs",authControl,getJobs);
-// // router.post("/applications",authControl,getApplications);//forward
-// // router.delete("/jobs/:jobid",authControl,getParticularJob);
-
-
-// module.exports=router;
+//COMPLETE??CHECK
+router.get("/",authControl,isAdmin,extractedCandidates);
+// router.get("/:candidate_id/jobs",authControl,isAdmin,getJobsByCandidate);  
 
 
 
+
+module.exports=router;
 

@@ -10,12 +10,13 @@ class JobRepo extends BaseRepo{
         super(Model);
     }
 
+//refactor
     async getAvailableJobs(appliedJobId){//got applied job id's
         console.log(appliedJobId);
-        const check = [{"job_id": 1},{"job_id": 2}] 
+        const check = [{"id": 1},{"id": 2}] 
         let availableJobs=await this.model.query()
-        .select("job_id","job_title","job_description")
-        .whereNotIn("job_id",check); //don't show passed ID's(Already applied)
+        .whereNotIn("id",check) //don't show passed ID's(Already applied)
+        .select("id","job_title","job_description");
 
         return availableJobs;
     }
@@ -28,7 +29,7 @@ class JobRepo extends BaseRepo{
         .where("user_id")
 
         let jobsFromApplication=await this.model.query()
-        .leftJoin("applications","jobs.job_id","=","applications.job_id")
+        .leftJoin("applications","jobs.id","=","applications.job_id")
         .whereNotIn("applications.user_id",arr);
         // .orWhereNull("applications.user_id")
         // .orWhere("user_id",null);
@@ -38,7 +39,9 @@ class JobRepo extends BaseRepo{
 
     async getAvailableJobs(appliedJobs){
         let availableJobs=await this.model.query()
-        .whereNotIn("job_id",appliedJobs);
+        .whereNotIn("id",appliedJobs)
+        .select("uuid","job_title","job_description");
+
         
         return availableJobs;
     }
@@ -46,14 +49,15 @@ class JobRepo extends BaseRepo{
 
     async idExists(id){
         let result=await this.model.query()
-        .where("job_id",id);
+        .where("id",id)
+        .select("uuid","job_title","job_description");
 
         return result;
     }
    
     async getJobIdByUuid(jobUuid){
         let jobId=await this.model.query()
-        .select("job_id")
+        .select("id")
         .where("uuid",jobUuid)
         .first();
 
@@ -66,11 +70,12 @@ class JobRepo extends BaseRepo{
         
         return jobId;
     }
-
+//??
     async postJobData(jobData){
+        // console.log("%%%%%%%%%%%%%%",jobData);
         let jobInserted=await this.model.query()
         .insert({
-            recruiter_id:jobData.recruiterid,
+            recruiter_id:jobData.recruiterid.id, //refactor
             job_title:jobData.title,
             job_description:jobData.description,
             uuid:jobData.uuid
@@ -78,15 +83,14 @@ class JobRepo extends BaseRepo{
     }
 
     async isJobExists(jobData){
+        // console.log("$$$$$$$$$$$",jobData.recruiterid.user_id);
         let getJob=await this.model.query()
-        .where("recruiter_id",jobData.recruiterid)
+        .where("recruiter_id",jobData.recruiterid.id)//changes done here check
         .where("job_title",jobData.title)
         .where("job_description",jobData.description);
 
         return getJob;
     }
-
-
 }
 
 module.exports=JobRepo;

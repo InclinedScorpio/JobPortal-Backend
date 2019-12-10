@@ -45,12 +45,14 @@ class ApplicationRepo extends BaseRepo{
         return candidates;
     }
 
-    async appliedCandidates(candidates){
-        let candidateDetails=await this.model.query()
-        .whereIn("user_id",candidate); //no base beacuse id specified differently.
+    async getAllApplications(){
+        let applications=await this.model.query();
 
-        return candidateDetails;
+        return applications;
     }
+
+
+  
 
 
 

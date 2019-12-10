@@ -22,7 +22,7 @@ class Application extends Model {
             modelClass: User,
             join: {
                 from: "applications.user_id",
-                to: "users.user_id"
+                to: "users.id"
             }
         },
         jobs:{

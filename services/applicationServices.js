@@ -26,13 +26,23 @@ module.exports={
             }
         }
         let job = await jobRepo.getJobIdByUuid(jobUuid);
-        console.log("APPLICATION REPO::::",job);
-        let candidates=await job.$relatedQuery("candidates").select("name").select("username");
-        // let transformedCandidates=transformer.appliedCandidates(candidates);
-        // console.log("%%%%%%%%%%%%%%%%",transformedCandidates);
+        // console.log("######",job);
+        let candidates=await job.$relatedQuery("candidates");
+       
         return{
                 data:candidates,
                 validator:true
         }         
+    },
+
+    getAllApplications:async()=>{
+
+        let jobApplications=await applicationRepo.getAllApplications();
+        return{
+            data:jobApplications,
+            validator:true
+        }
     }
+
+   
 }
