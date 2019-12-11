@@ -1,13 +1,13 @@
 
 exports.up = function(knex) {
     return knex.schema.createTable("jobs",table=>{
-      table.increments("job_id").primary();
+      table.increments("id").primary();
       table.integer("recruiter_id").notNullable().unsigned();
       table.string("job_title").notNullable();
       table.string("job_description").notNullable()
-      table.string("profile");
+      table.string("uuid");
 
-      table.foreign("recruiter_id").references("user_id").inTable("users");
+      table.foreign("recruiter_id").references("id").inTable("users");
     });
   };
   
