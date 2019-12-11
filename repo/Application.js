@@ -1,7 +1,7 @@
-const BaseRepo=require("./BaseRepo");
+const Base=require("./Base");
 
 
-class ApplicationRepo extends BaseRepo{
+class Application extends Base{
     constructor(Model){
         super(Model);
     }
@@ -16,15 +16,15 @@ class ApplicationRepo extends BaseRepo{
 }
 
 
-    async addApplication(userId,jobId,uuid){
-        let addedApplication=await this.model.query()
-        .insert({
-            user_id:userId,
-            job_id:jobId,
-            uuid:uuid
-        });
-        return addedApplication;
-    }
+    // async addApplication(userId,jobId,uuid){
+    //     let addedApplication=await this.model.query()
+    //     .insert({
+    //         user_id:userId,
+    //         job_id:jobId,
+    //         uuid:uuid
+    //     });
+    //     return addedApplication;
+    // }
 
     async isApplicationExists(userId,jobId){
         let application=await this.model.query()
@@ -44,7 +44,7 @@ class ApplicationRepo extends BaseRepo{
 
     async getAllApplications(pageDetails){
         let applications=await this.model.query()
-        .page(pageDetails.page,pageDetails.limit);
+        .page(pageDetails.page -1 ,pageDetails.limit);
 
         return applications;
     }
@@ -89,4 +89,4 @@ class ApplicationRepo extends BaseRepo{
 
 
 
-module.exports=ApplicationRepo;
+module.exports=Application;

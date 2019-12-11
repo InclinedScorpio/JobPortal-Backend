@@ -4,7 +4,7 @@ const {
   applyForJob,
   postNewJob,
   jobsApplied
-} = require("../services/jobServices");
+} = require("../services/job");
 
 const getAllJobs = async (req, res, next) => {
   let jobData = await getJobs(req);
@@ -17,8 +17,9 @@ const applyToJob = async (req, res, next) => {
   let jobDetails = await applyForJob(jobId,userId);
   if (jobDetails.validator) {
     res.success(200, "Successfully Applied", jobDetails.data);
+  } else {
+    res.error(404, "Failed", jobDetails);
   }
-  res.error(404, "Failed", jobDetails);
 };
 
 
@@ -27,8 +28,9 @@ const postJob = async (req,res,next)=>{
     let jobPosted=await postNewJob(recruiterId,req.body);
     if(jobPosted.validator){
         res.success(200,"Successfully Posted", jobPosted.data);
+    } else {
+        res.error(404,"Failed",jobPosted.error);
     }
-    res.error(404,"Failed",jobPosted.error);
 }
 
 const appliedJobs=async(req,res,next)=>{
@@ -36,8 +38,9 @@ const appliedJobs=async(req,res,next)=>{
   let getJobApplied=await jobsApplied(candidateUuid,req);
   if(getJobApplied.validator){
     res.success(200,"Successfully extracted Jobs",getJobApplied.data);
+    } else {
+      res.error(404,"Failed to extract Jobs");
     }
-    res.error(404,"Failed to extract Jobs");
 }
 
 

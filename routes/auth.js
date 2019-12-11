@@ -5,7 +5,7 @@ const {
     signin,
     forgetPassword,
     resetPassword
- }=require("../controller/authController"); 
+ }=require("../controller/auth"); 
 
 router.post("/signup", signup);
 router.post("/signin",signin);

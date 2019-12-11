@@ -3,9 +3,9 @@ const Job=require("../models/Job");
 const User=require("../models/User");
 const uuid=require("uuid/v1");
 
-const JobRepo =require("../repo/JobRepo");
-const UserRepo=require("../repo/UserRepo");
-const ApplicationRepo=require("../repo/ApplicationRepo");
+const JobRepo =require("../repo/Job");
+const UserRepo=require("../repo/User");
+const ApplicationRepo=require("../repo/Application");
 const validator=require("../validators/jobValidator");
 const pagination=require("../transformers/pagination");
 
@@ -66,14 +66,14 @@ module.exports={
         
     //Candidate comes to apply
     applyForJob:async(jobUuid,userUuid)=>{
-        let jobId=await jobRepo.getJobDetailsByUuid(jobUuid);
+        let jobId=await jobRepo.findOne("uuid", jobUuid );
         if(typeof(jobId.id)==="undefined"){
             return{
                 error:"Job Doesn't Exist",
                 validator:false, 
             }
         }
-        let checkJobId=await jobRepo.idExists(jobId.id);//get id from object[0]
+        let checkJobId=await jobRepo.findAndSelect("id",jobId.id,["uuid","job_title","job_description"],0);//get id from object[0]
        
         if(checkJobId.length>0){//if exists            
             let userId=await userRepo.getIdByuuid(userUuid);
@@ -86,7 +86,8 @@ module.exports={
                 }
             }
             let generatedUuid=uuid();
-            let addedApplication=await applicationRepo.addApplication(userId.id,jobId.id,generatedUuid);//refactor
+            
+            let addedApplication=await applicationRepo.create({user_id: userId.id, job_id: jobId.id,uuid: generatedUuid});//refactor
             //transform data here Check ??????
             return{                
                 data:checkJobId,
@@ -101,7 +102,7 @@ module.exports={
 
 
     postNewJob:async(recruiterId,jobData)=>{
-        
+        console.log("$$$$$$$$$$",jobData);
         //DO VALIDATION ERROR HERE
         let savedPassedData={
             title:jobData.title,
@@ -119,7 +120,7 @@ module.exports={
             }
         }
 
-
+    
         let isJobExists=await jobRepo.isJobExists(jobData);
         if(isJobExists.length>0){//job already posted
             return {
@@ -129,7 +130,13 @@ module.exports={
         }
         jobData.uuid=uuid();
         savedPassedData["uuid"]=jobData.uuid;
-        let jobPosted=await jobRepo.postJobData(jobData);
+        
+        let jobPosted=await jobRepo.create({
+            recruiter_id:jobData.recruiterid.id, //refactor
+            job_title:jobData.title,
+            job_description:jobData.description,
+            uuid:jobData.uuid
+        });
         return {
             data:savedPassedData,
             validator:true
@@ -149,7 +156,7 @@ module.exports={
             offset:offset
         }
         let candidateId = await userRepo.getIdByuuid(candidateUuid);
-        let jobs = await candidateId.$relatedQuery("appliedjobs").page(parseInt(pageDetail.page),parseInt(pageDetail.limit));
+        let jobs = await candidateId.$relatedQuery("appliedjobs").page(parseInt(pageDetail.page - 1),parseInt(pageDetail.limit));
 
 
         jobs["total"]=jobs.total;
@@ -166,7 +173,7 @@ module.exports={
 
     jobDelete:async(jobData)=>{
 
-        let job = await jobRepo.getJobDetailsByUuid(jobData.job_id);
+        let job = await jobRepo.findOne('uuid' ,jobData.job_id );
         if(typeof(job)=="undefined"){
             return{
                 validator:false,
@@ -175,7 +182,7 @@ module.exports={
             }
         }
         let deletedApplications=await applicationRepo.deleteAppByJobId(job.id);
-        let deletedJobs=await jobRepo.deleteJobByJobId(job.id);
+        let deletedJobs=await jobRepo.delete("id",job.id);
         return{
             message:"Job deleted successfully",
             validator:true

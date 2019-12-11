@@ -3,9 +3,9 @@ const Job=require("../models/Job");
 const User=require("../models/User");
 const uuid=require("uuid/v1");
 
-const JobRepo =require("../repo/JobRepo");
-const UserRepo=require("../repo/UserRepo");
-const ApplicationRepo=require("../repo/ApplicationRepo");
+const JobRepo =require("../repo/Job");
+const UserRepo=require("../repo/User");
+const ApplicationRepo=require("../repo/Application");
 const transformer=require("../transformers/userTransformer");
 
 const validator=require("../validators/candidateValidator");
@@ -30,7 +30,7 @@ module.exports={
                 }
 
 
-        let allCandidates=await userRepo.getUsersByRole(0,pageDetail);
+        let allCandidates=await userRepo.findAndSelect("role",0,["uuid","name","username"],pageDetail);
 
         allCandidates["total"]=allCandidates.total;
         allCandidates=pagination.paginateResponse(allCandidates,pageDetail);
@@ -55,7 +55,7 @@ module.exports={
         }
 
 
-        let allRecruiters=await userRepo.getUsersByRole(1,pageDetail);
+        let allRecruiters=await userRepo.findAndSelect("role",1,["uuid","name","username"],pageDetail);
         allRecruiters["total"]=allRecruiters.total;
         allRecruiters=pagination.paginateResponse(allRecruiters,pageDetail);
 
@@ -88,7 +88,7 @@ module.exports={
         let saveCandidate=extractedCandidate;
         //now delete the candidate
         let deleteAppli=await applicationRepo.deleteByUserId(extractedCandidate.id);
-        let deleteUser=await userRepo.deleteByUuid(extractedCandidate.uuid);
+        let deleteUser=await userRepo.delete("uuid",extractedCandidate.uuid);
         return{
             message:"candidate deleted successfully",
             validator:true
@@ -115,15 +115,17 @@ module.exports={
             };
         }
         //id belongs to recruiter and present->extract jobs
-        let jobsofRecruiter=await jobRepo.getJobByRecruiterId(extractedRecruiter.id);
+        let jobsofRecruiter=await jobRepo.findAndSelect("id",extractedRecruiter.id,["id"],0);
         let arr=[];
         for(let i=0;i<jobsofRecruiter.length;i++)
         {
             arr.push(jobsofRecruiter[i].id);
         }
+
         let deletedApplications=await applicationRepo.deleteGivenJobs(arr);
-        let deletedJobs=await jobRepo.deleteByRecruiterId(extractedRecruiter.id);
-        let deletedRecruiters=await userRepo.deleteByUuid(userData.recruiter_id);
+        let deletedJobs=await jobRepo.delete("recruiter_id",extractedRecruiter.id);
+
+        let deletedRecruiters=await userRepo.delete("uuid",userData.recruiter_id);
 
         return{
             message:"Recruiter deleted successfully",

@@ -4,7 +4,7 @@ const {
     getAllJobs,//check and controller also CHECK
     applyToJob,
     postJob
-}=require("../controller/jobController");
+}=require("../controller/job");
 const{
     isCandidate,
     isRecruiter,
@@ -13,12 +13,12 @@ const{
 }=require("../middlewares/checkRole");
 const{
     deleteJob
-}=require("../controller/adminController");
+}=require("../controller/admin");
 
 
 const{
     getCandidates
-}=require("../controller/applicationController");
+}=require("../controller/application");
 
 
 

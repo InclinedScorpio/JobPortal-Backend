@@ -3,9 +3,9 @@ const Job=require("../models/Job");
 const User=require("../models/User");
 const uuid=require("uuid/v1");
 
-const JobRepo =require("../repo/JobRepo");
-const UserRepo=require("../repo/UserRepo");
-const ApplicationRepo=require("../repo/ApplicationRepo");
+const JobRepo =require("../repo/Job");
+const UserRepo=require("../repo/User");
+const ApplicationRepo=require("../repo/Application");
 const transformer=require("../transformers/userTransformer");
 const pagination=require("../transformers/pagination");
 
@@ -19,7 +19,7 @@ module.exports={
 
     getApplications:async(jobUuid,user)=>{
 
-        let page=user.query.page;//by user
+        let page=user.query.page ;//by user
                 let limit=user.query.limit;//by user 
                 let offset=(page)*limit;
 
@@ -38,7 +38,7 @@ module.exports={
             }
         }
         let job = await jobRepo.getJobIdByUuid(jobUuid);
-        let candidates=await job.$relatedQuery("candidates").page(pageDetail.page,pageDetail,limit);
+        let candidates=await job.$relatedQuery("candidates").page(pageDetail.page - 1,pageDetail,limit);
         candidates["total"]=candidates.total;
         candidates=pagination.paginateResponse(candidates,pageDetail);
 

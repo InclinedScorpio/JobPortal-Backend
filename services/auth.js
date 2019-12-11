@@ -1,6 +1,6 @@
 const bcrypt=require("bcrypt");
 const uuid=require("uuid/v1");
-const UserRepo = require('../repo/UserRepo');
+const UserRepo = require('../repo/User');
 const uservalidator=require("../validators/userValidator");
 const transformer=require("../transformers/userTransformer");
 const jwt=require("jsonwebtoken");
@@ -8,7 +8,7 @@ const Otp=require("../models/Otp");
 const sendMail=require("../utilities/sendMail");//for smtp mail 
 const  otplib=require("otplib");//to get otp
 const User=require("../models/User");
-const otpRepo=require("../repo/otpRepo");
+const otpRepo=require("../repo/otp");
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -27,12 +27,25 @@ module.exports={
     let validatedresponse=uservalidator.newAccount(signupData);
 
     if(validatedresponse.value){
+      if(signupData.role=="2"){
+        let isUserExist=await userRepo.adminExists();
+        if((isUserExist)!==undefined){
+          let temp={
+            code:422,
+            field:"username",
+            result:"Admin already added",
+            token:null
+          };
+          return temp;               
+        }
+      }
+
     const hash = await bcrypt.hash(signupData.password, 10);
     signupData.password = hash;
     signupData.uuid=uuid();
 
  
-      let isUserExist=await userRepo.findByUsername(signupData.username);
+      let isUserExist=await userRepo.findAndSelect("username",signupData.username,[],0);
       if(isUserExist.length>0){
           let temp={
             code:422,
@@ -83,7 +96,7 @@ module.exports={
                   if(result==true){//grant login
 
                     let token=jwt.sign({ role:isUserExist.role,userid:isUserExist.uuid}
-                    ,process.env.JWT_PASS,{expiresIn:"500h"});
+                    ,process.env.JWT_PASS,{expiresIn:"1h"});
                     isUserExist["token"]=token;
                     let userData=transformer.validSignIn(isUserExist);
                     return await userData;
@@ -108,6 +121,7 @@ module.exports={
 
 
    processUserDetails:async(userName)=>{
+
     validateUsername=uservalidator.validateUser(userName);
     if(!validateUsername.value){
       return{
@@ -127,7 +141,7 @@ module.exports={
     const secret = process.env.OTP_SECRET;
     const token = parseInt(otplib.authenticator.generate(secret));
     //insert the token in db
-    const saveOTP=await OtpRepo.saveOTP(token,userName);
+    const saveOTP=await OtpRepo.create({otp: token,name: userName});
     let otpsent=await sendMail.sendEmailTo(userName,token);
     return{
       email:otpsent.email,
@@ -141,7 +155,7 @@ module.exports={
 
   resetPass:async(resetData)=>{
     let username=resetData.username;
-    let otp=resetData.otp;
+    let otp=parseInt(resetData.otp);
     let password=resetData.password;
 
     //check if everything there.->Validator
@@ -149,11 +163,10 @@ module.exports={
     let verifiedData=uservalidator.checkResetData(resetData);
     if(!verifiedData.validator){
         return{
-          error:"Data can't be verified",
+          error:verifiedData.error,
           value:false
         }
     }
-
 
     //everything present check if email exist !
     let EmailExists=await OtpRepo.checkUsernameAndOTP(username,otp);
@@ -182,11 +195,10 @@ module.exports={
         value:false
       }
     }
-
     //both username and otp exists!!
     const hash = await bcrypt.hash(password, 10);
     let storedData=await userRepo.updatePassword(hash,username);
-    let deleteOTP=await OtpRepo.removeAllOTP(username);
+    let deleteOTP=await OtpRepo.delete("email",username);
     
     return{
       data:{

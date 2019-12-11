@@ -2,15 +2,14 @@
 // const User=require("../models/User");
 const express=require("express");
 const app=express();
-const { authSignup,authSignin,processUserDetails,resetPass } =require("../services/authServices");
+const { authSignup,authSignin,processUserDetails,resetPass } =require("../services/auth");
 
 
 
 let signup = async (req,res,next) => {
-
     let userData=await authSignup(req.body); 
     if(userData.token==null){
-        res.error(422,"unprocessabele entity",userData.result);
+        res.error(422,"unprocessable entity",userData.result);
     }else{
         res.success(200,"Success",userData);
     }

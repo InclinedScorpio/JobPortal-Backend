@@ -7,7 +7,7 @@ const{
 const{
     extractedCandidates,
     deleteCandidate
-}=require("../controller/adminController");
+}=require("../controller/admin");
 
 
 router.get("/",authControl,isAdmin,extractedCandidates);

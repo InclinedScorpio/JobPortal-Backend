@@ -6,6 +6,7 @@ const responseProvider=require("./middlewares/ResponseProvider");
 const dotenv = require("dotenv");
 const headers=require("./middlewares/headers");
 const rateLimit = require("express-rate-limit");
+const cors = require("cors")
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 app.use(responseProvider);
 app.use(headers);
 app.use(limiter);
+app.use(cors());
 
 const indexRoutes=require("./routes/index");
 app.use(indexRoutes)

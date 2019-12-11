@@ -8,7 +8,7 @@ const{
 }=require("../middlewares/checkRole");
 const{
     appliedJobs
-}=require("../controller/jobController");
+}=require("../controller/job");
 
 
 

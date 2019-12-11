@@ -6,7 +6,7 @@ const router=express.Router();
    
     extractedRecruiters,
     deleteRecruiter
-}=require("../controller/adminController");
+}=require("../controller/admin");
 const authControl=require("../middlewares/checkAuth");
 const{
     isAdmin 

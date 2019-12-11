@@ -1,13 +1,6 @@
-// module.exports={
-    //just make functions and pass it using {} use validator
-// }
+
 var validator = require('validator');
-var validatorjs=require("validatorjs");
-// const {
-//     User,
-//     Job,
-//     Application
-// } = require('../models');
+
 
 module.exports = {
     newAccount: (user) => {
@@ -60,11 +53,11 @@ module.exports = {
                 "field": "password",
                 "message": "Password should not be empty."
             });
-        } else if (user.password.length < 4) {
+        } else if (user.password.length < 6) {
             errors.push({
                 "code": 422,
                 "field": "password",
-                "message": "Minimum 4 character password required."
+                "message": "Minimum 6 character password required."
             });
         }
 
@@ -87,7 +80,14 @@ module.exports = {
                 "message": "Role can only be numeric."
             })
         }
-        if (user.role > 2) {
+        if (user.role > 2 ) {
+            errors.push({
+                "code": 422,
+                "field": "role",
+                "message": "Not a valid user role."
+            });
+        }
+        if (user.role < 0 ) {
             errors.push({
                 "code": 422,
                 "field": "role",
@@ -163,47 +163,85 @@ module.exports = {
     },
 
     validateUser:(user)=>{
-        let data={
-            username:user
+            let errors=[];
+
+        if (validator.isEmpty(user)) {
+            errors.push({
+                "code": 422,
+                "field": "email",
+                "message": "Username should not be empty."
+            });
+        } else if (!validator.isEmail(user)) {
+            errors.push({
+                "code": 422,
+                "field": "username",
+                "message": "Username is not valid."
+            });
         }
-        let rule={
-            username:"required|email"
-        }
-        let validation = new validatorjs(data, rule);
-        if(validation.passes()){
+
+        if(errors.length>0){
             return{
-                value:true
+                value:false,
+                error:errors
+            }
+        }else{
+            return {
+                value:true,
             }
         }
-        return{
-            value:false
-        }
+
 
     },
 
 
     checkResetData:(resetData)=>{
+       
+console.log("$$$$$$$$$$$$$$$$",resetData);
+        const errors = [];
+
+        if (validator.isEmpty(resetData.username)) {
+            errors.push({
+                "code": 422,
+                "field": "email",
+                "message": "Username can't be empty."
+            });
+        } else if (!validator.isEmail(resetData.username)) {
+            errors.push({
+                "code": 422,
+                "field": "username",
+                "message": "Username is not valid."
+            });
+        } if (validator.isEmpty(resetData.password)) {
+            errors.push({
+                "code": 422,
+                "field": "password",
+                "message": "password can't not be empty."
+            });
+        }else if (resetData.password.length<6) {
+            errors.push({
+                "code": 422,
+                "field": "password",
+                "message": "password should be minimum 6 character long."
+            });
+        }
         
-        data={
-            username:resetData.username,
-            otp:parseInt(resetData.otp),
-            password:resetData.password
+        if (validator.isEmpty(resetData.otp)) {
+            errors.push({
+                "code": 422,
+                "field": "otp",
+                "message": "otp can't be empty"
+            });
         }
-        rule={
-            username:"required|email",
-            otp:"required|min:1",
-            password:"required"
-        }
-        let validation = new validatorjs(data, rule);
-        if(validation.passes()){
+        if(errors.length>0){
             return{
-                validator:true
+                validator:false,
+                error:errors
+            }
+        }else{
+            return {
+                validator:true,
             }
         }
-        return{
-            validator:false
-        }
-    
 
     }
 

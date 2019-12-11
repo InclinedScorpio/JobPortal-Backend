@@ -1,17 +1,17 @@
 const{
     getAllApplications
-}=require("../services/applicationServices");
+}=require("../services/application");
 
 const{
     getAllCandidates,
     getAllRecruiters,
     candidateDelete,
     recruiterDelete
-}=require("../services/userServices");
+}=require("../services/user");
 
 const{
     jobDelete
-}=require("../services/jobServices");
+}=require("../services/job");
 
 
 const extractedApplications=async(req,res,next)=>{

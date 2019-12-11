@@ -1,6 +1,6 @@
 const {
     getApplications
-  } = require("../services/applicationServices");
+  } = require("../services/application");
   
 
   const getCandidates=async(req,res,next)=>{
