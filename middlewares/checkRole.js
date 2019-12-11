@@ -2,6 +2,7 @@
 module.exports={
 
     isCandidate:(req,res,next)=>{
+        console.log("###############",req.headerData.role);
         let role=req.headerData.role;
         if(role==0){
          return  next();

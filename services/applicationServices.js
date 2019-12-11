@@ -17,7 +17,7 @@ applicationRepo=new ApplicationRepo(Application);
 
 module.exports={
 
-    getApplications:async(jobUuid,req)=>{
+    getApplications:async(jobUuid,user)=>{
 
         let page=user.query.page;//by user
                 let limit=user.query.limit;//by user 

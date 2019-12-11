@@ -22,11 +22,11 @@ const{
 
 
 
-router.get("/jobs",authControl,isAdminOrCandidate,getAllJobs);
-router.get("/:job_id/applications",authControl,isRecruiter,getCandidates);
-router.post("/:job_id",authControl,isCandidate,applyToJob);
-router.get("/",authControl,isAdminOrCandidate,getAllJobs);
-router.post("/",authControl,isRecruiter,postJob)
+router.get("/jobs",authControl,isAdminOrCandidate,getAllJobs);//done
+router.get("/:job_id/applications",authControl,isRecruiter,getCandidates);//done
+router.post("/:job_id",authControl,isCandidate,applyToJob);//done
+router.get("/",authControl,isAdminOrCandidate,getAllJobs);//done
+router.post("/",authControl,isRecruiter,postJob)//done
 router.delete("/:job_id",authControl,isAdmin,deleteJob);
 
 

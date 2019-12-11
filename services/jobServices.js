@@ -154,7 +154,7 @@ module.exports={
 
         jobs["total"]=jobs.total;
         jobs=pagination.paginateResponse(jobs,pageDetail);
-        c
+        
 
 
         return {

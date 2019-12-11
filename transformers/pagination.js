@@ -17,9 +17,6 @@ module.exports={
 // availableJobs["total"]=availableJobs.total;
 // availableJobs=pagination.paginateResponse(availableJobs,pageDetail);
 
-
-
-
 // let page=user.query.page;//by user
 //         let limit=user.query.limit;//by user 
 //         let offset=(page-1)*limit;
