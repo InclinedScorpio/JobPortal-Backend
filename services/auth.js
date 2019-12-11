@@ -61,7 +61,7 @@ module.exports={
 
       const token=jwt.sign(
       {role:signupData.role, userid:signupData.uuid},
-      process.env.JWT_PASS,{ expiresIn:"1h"});
+      process.env.JWT_PASS,{ expiresIn:"500h"});
 
       signupData["token"]=token;
       const userdata= transformer.validUser(signupData);
@@ -103,7 +103,7 @@ module.exports={
                   }else{//USER WRONG CREDENTIALS
                     return {
                       code:401,
-                      error:"unauthorized access",
+                      error:"Wrong Password, try again",
                       value:false,
                     };
                   }
@@ -141,7 +141,7 @@ module.exports={
     const secret = process.env.OTP_SECRET;
     const token = parseInt(otplib.authenticator.generate(secret));
     //insert the token in db
-    const saveOTP=await OtpRepo.create({otp: token,name: userName});
+    const saveOTP=await OtpRepo.create({otp: token,email: userName});
     let otpsent=await sendMail.sendEmailTo(userName,token);
     return{
       email:otpsent.email,
@@ -172,7 +172,7 @@ module.exports={
     let EmailExists=await OtpRepo.checkUsernameAndOTP(username,otp);
     if(typeof(EmailExists)=="undefined"){
       return{
-        error:"OTP doesn't exists",
+        error:"No record Found",
         value:false
       }
     }
