@@ -5,16 +5,17 @@ const recruiterRoutes = require('./recruiter');
 const applicationRoutes = require('./application');
 const authRoutes=require("./auth");
 
+const version = 'v1'
 
-router.use('/jobs', jobRoutes);
+router.use(`/api/${version}/jobs`, jobRoutes);
 
-router.use('/candidates', candidateRoutes);
+router.use(`/api/${version}/candidates`, candidateRoutes);
 
-router.use('/recruiters', recruiterRoutes);
+router.use(`/api/${version}/recruiters`, recruiterRoutes);
 
-router.use('/applications', applicationRoutes);
+router.use(`/api/${version}/applications`, applicationRoutes);
 
-router.use("/",authRoutes);
+router.use(`/api/${version}/`,authRoutes);
 
 
 
