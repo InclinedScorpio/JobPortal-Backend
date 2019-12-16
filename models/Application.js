@@ -12,7 +12,7 @@ class Application extends Model {
   static get tableName() {
     return 'applications';
   }
-  
+
   static get relationMappings() {
     return {
         users: {

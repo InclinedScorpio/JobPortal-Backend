@@ -13,6 +13,8 @@ jobRepo=new JobRepo(Job);
 userRepo=new UserRepo(User);
 applicationRepo=new ApplicationRepo(Application);
 
+const { transformAll } = require('./../transformers/jobTransformer')
+
 module.exports={
     getJobs:async(user)=>{
         //if admin
@@ -38,6 +40,7 @@ module.exports={
             }
 
         }
+        //if candidate
         let page=user.query.page;//by user
         let limit=user.query.limit;//by user 
         let offset=(page)*limit;
@@ -56,10 +59,12 @@ module.exports={
         let availableJobs=await jobRepo.getAvailableJobs(arr,pageDetail);
         availableJobs["total"]=availableJobs.total;
         availableJobs=pagination.paginateResponse(availableJobs,pageDetail);
-
-
+        // Remove uuid
+        // console.log(availableJobs.results);
+        // const availableJobsAre=transformAll(availableJobs);
+        // console.log(availableJobs);
         return {
-             data:availableJobs            
+             data:availableJobs          
         }
 
     },
@@ -108,6 +113,18 @@ module.exports={
             title:jobData.title,
             description:jobData.description,
             uuid:jobData.uuid
+        }
+        if(savedPassedData.description.length>300){
+            return{
+                error:"description can't be more than 300 words",
+                validator:false
+            }
+        }
+        if(savedPassedData.title.length>60){
+            return{
+                error:"title can't be more than 60 words",
+                validator:false
+            }
         }
         let recruiterID=await userRepo.getIdByuuid(recruiterId);
         jobData.recruiterid=recruiterID;

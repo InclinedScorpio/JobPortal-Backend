@@ -33,7 +33,7 @@ module.exports={
         let isUuidValid=validator.checkPassedUUID(jobUuid);
         if(isUuidValid.validator==false){
             return{
-                error:"uuid can't be empty",
+                error:"id can't be empty",
                 validator:false,
             }
         }
@@ -42,8 +42,6 @@ module.exports={
         candidates["total"]=candidates.total;
         candidates=pagination.paginateResponse(candidates,pageDetail);
 
-
-    //    console.log("SENDING::::",candidates);
         return{
                 data:candidates,
                 validator:true

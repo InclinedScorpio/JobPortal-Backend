@@ -30,7 +30,7 @@ const postJob = async (req,res,next)=>{
     if(jobPosted.validator){
         res.success(200,"Successfully Posted", jobPosted.data);
     } else {
-        res.error(404,"Failed",jobPosted.error);
+        res.error(422,"Failed",jobPosted.error);
     }
 }
 

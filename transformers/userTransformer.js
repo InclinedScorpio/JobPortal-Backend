@@ -10,7 +10,7 @@ let validUser=(userData)=>{
 
 let validSignIn=(userData)=>{
     usertransformdata={
-        userid:userData.uuid,
+        id:userData.uuid,
         username:userData.username,
         name:userData.name,
         role:userData.role,
@@ -23,7 +23,7 @@ let validSignIn=(userData)=>{
 
 let userDetailToAdmin=(userData)=>{
     transformedUserData={
-        uuid:userData.uuid,
+        id:userData.uuid,
         name:userData.name,
         username:userData.username,
     }
