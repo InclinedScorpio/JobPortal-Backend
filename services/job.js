@@ -187,6 +187,27 @@ module.exports={
             message:"Job deleted successfully",
             validator:true
         }
+    },
+
+
+
+    jobsPosted:async(recruiterUuid,user)=>{
+        let page=user.query.page;//by user
+                let limit=user.query.limit;//by user 
+                let offset=(page)*limit;
+
+                let pageDetail={
+                    limit:parseInt(user.query.limit),
+                    page:parseInt(page),
+                    offset:parseInt(offset)
+                }
+                console.log("XXXXXXXX::GOT IN SERVICE");
+        let recruiterId=await userRepo.getIdByuuid(recruiterUuid);
+        let extractedPostedJobs=await jobRepo.getJobsPosted(recruiterId.id,pageDetail);
+        return{
+            validator:true,
+            data:extractedPostedJobs
+        }
 
         
     }

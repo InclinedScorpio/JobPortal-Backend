@@ -10,7 +10,7 @@ const cors = require("cors")
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 60 // limit each IP to 100 requests per windowMs
+  max: 300 // limit each IP to 100 requests per windowMs
 });
  
 dotenv.config();
@@ -27,5 +27,5 @@ const indexRoutes=require("./routes/index");
 app.use(indexRoutes)
 
 app.listen(process.env.PORT,()=>{
-    console.log('the server started!', process.env.PORT)
+    console.log('Server Started : PORT ', process.env.PORT)
 })

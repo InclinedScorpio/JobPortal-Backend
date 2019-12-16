@@ -8,6 +8,7 @@
         });
     },
     res.error =(code=404,message="failed",errors)=>{
+        
         res.status(code).send({//code message desc.
             code,
             message,
@@ -15,7 +16,6 @@
         });
     }
     next();
-
  } 
 
  module.exports= resposeProvider;

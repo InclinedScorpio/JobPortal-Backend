@@ -93,7 +93,7 @@ module.exports={
               const hash=isUserExist.password;
                const result = await bcrypt.compare(signinData.password, hash);
                   
-                  if(result==true){//grant login
+                  if(result){//grant login
 
                     let token=jwt.sign({ role:isUserExist.role,userid:isUserExist.uuid}
                     ,process.env.JWT_PASS,{expiresIn:"1h"});
@@ -154,9 +154,7 @@ module.exports={
 
 
   resetPass:async(resetData)=>{
-    let username=resetData.username;
-    let otp=parseInt(resetData.otp);
-    let password=resetData.password;
+  
 
     //check if everything there.->Validator
 
@@ -167,6 +165,9 @@ module.exports={
           value:false
         }
     }
+    let username=resetData.username;
+    let otp=parseInt(resetData.otp);
+    let password=resetData.password;
 
     //everything present check if email exist !
     let EmailExists=await OtpRepo.checkUsernameAndOTP(username,otp);

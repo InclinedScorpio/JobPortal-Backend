@@ -19,8 +19,8 @@ module.exports={
 
     getApplications:async(jobUuid,user)=>{
 
-        let page=user.query.page ;//by user
-                let limit=user.query.limit;//by user 
+        let page=parseInt(user.query.page) ;//by user
+                let limit=parseInt(user.query.limit);//by user 
                 let offset=(page)*limit;
 
                 let pageDetail={
@@ -43,7 +43,7 @@ module.exports={
         candidates=pagination.paginateResponse(candidates,pageDetail);
 
 
-       
+    //    console.log("SENDING::::",candidates);
         return{
                 data:candidates,
                 validator:true

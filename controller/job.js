@@ -3,7 +3,8 @@ const {
   getJobs,
   applyForJob,
   postNewJob,
-  jobsApplied
+  jobsApplied,
+  jobsPosted
 } = require("../services/job");
 
 const getAllJobs = async (req, res, next) => {
@@ -44,10 +45,24 @@ const appliedJobs=async(req,res,next)=>{
 }
 
 
+const jobsByRecruiter=async(req,res,next)=>{
+  let recruiterId=req.headerData.userid;
+  let postedJobs=await jobsPosted(recruiterId,req);
+  if(postedJobs.validator){
+    res.success(200,"Successfully extracted Posted Jobs",postedJobs.data);
+  }else{
+    res.error(404,"Failed to extract postedJobs");
+  }
+
+}
+
+
 
 module.exports = {
     getAllJobs,
     applyToJob,
     postJob,
-    appliedJobs
+    appliedJobs,
+    jobsByRecruiter
+    
 };

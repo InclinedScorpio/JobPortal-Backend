@@ -232,6 +232,13 @@ console.log("$$$$$$$$$$$$$$$$",resetData);
                 "message": "otp can't be empty"
             });
         }
+        else if(!validator.isNumeric(resetData.otp)){
+            errors.push({
+                "code":422,
+                "field":"otp",
+                "message":"otp should only be digits."
+            })
+        }
         if(errors.length>0){
             return{
                 validator:false,
