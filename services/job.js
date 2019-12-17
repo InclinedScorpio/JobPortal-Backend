@@ -114,15 +114,15 @@ module.exports={
             description:jobData.description,
             uuid:jobData.uuid
         }
-        if(savedPassedData.description.length>300){
+        if(savedPassedData.description.length>1000){
             return{
-                error:"description can't be more than 300 words",
+                error:"description can't be more than 1000 words",
                 validator:false
             }
         }
-        if(savedPassedData.title.length>60){
+        if(savedPassedData.title.length>100){
             return{
-                error:"title can't be more than 60 words",
+                error:"title can't be more than 100 words",
                 validator:false
             }
         }
