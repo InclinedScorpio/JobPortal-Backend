@@ -13,17 +13,13 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 
-// const Job=require("../models/Job");
-// const Application=require("../modelsApplication");
-
 const userRepo = new UserRepo(User);
 const OtpRepo=new otpRepo(Otp);
 
-//all methods inside will be async as having await(because further calling async)
-//Also because we want to wait till it completes the work.
+
 module.exports={
   authSignup: async(signupData)=>{
-
+    delete signupData.confirm;
     let validatedresponse=uservalidator.newAccount(signupData);
 
     if(validatedresponse.value){
@@ -67,7 +63,6 @@ module.exports={
       signupData["token"]=token;
       const userdata= transformer.validUser(signupData);
       return userdata;
-
 
     }else{
       return validatedresponse;
@@ -157,9 +152,6 @@ module.exports={
 
   resetPass:async(resetData)=>{
   
-
-    //check if everything there.->Validator
-
     let verifiedData=uservalidator.checkResetData(resetData);
     if(!verifiedData.validator){
         return{

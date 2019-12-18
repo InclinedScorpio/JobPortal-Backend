@@ -37,12 +37,7 @@ module.exports={
 
 
 
-        //temp
-        // let allJobs=await jobRepo.getAllJobs(pageDetail);
-        // let trasformedData=jobTransformer.jobData(allJobs.results);
-        // trasformedData["total"]=allJobs.total;
-        // allJobs=pagination.paginateResponse(trasformedData,pageDetail);
-
+    
         return {
             data:allCandidates.data,
             metadata:allCandidates.metadata,

@@ -2,6 +2,7 @@ const validator=require("validatorjs");
 
 
 module.exports={
+    
     validateJobData:(jobData)=>{
         const rule={
             title:"required|min:2",
