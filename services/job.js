@@ -72,7 +72,7 @@ module.exports={
     //Candidate comes to apply
     applyForJob:async(jobUuid,userUuid)=>{
         let jobId=await jobRepo.findOne("uuid", jobUuid );
-        if(typeof(jobId.id)==="undefined"){
+        if(typeof(jobId)==="undefined"){
             return{
                 error:"Job Doesn't Exist",
                 validator:false, 
