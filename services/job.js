@@ -58,9 +58,8 @@ module.exports={
         let extractedJobs=await applicationRepo.getAppliedJobs(jobId.id);
         let arr=[];//to get Applied jobs;
         for(let i=0;i<extractedJobs.length;i++){     
-                  arr.push(extractedJobs[i].job_id); }//refactor
-
-        
+                  arr.push(extractedJobs[i].job_id); }
+                  
         let availableJobs=await jobRepo.getAvailableJobs(arr,pageDetail);
         let transformedData=jobTransformer.jobData(availableJobs.results);
         transformedData["total"]=availableJobs.total;
@@ -186,8 +185,6 @@ module.exports={
         jobs=pagination.paginateResponse(transformedData,pageDetail);
 
 
-      
-
         return {
             data:jobs.data,
             metadata:jobs.metadata,
@@ -228,15 +225,15 @@ module.exports={
                 }
                 // console.log("XXXXXXXX::GOT IN SERVICE");
         let recruiterId=await userRepo.getIdByuuid(recruiterUuid);
-        let extractedPostedJobs=await jobRepo.getJobsPosted(recruiterId.id,pageDetail);
-        
+        let extractedPostedJobs=await jobRepo.getJobsPosted(recruiterId.id,pageDetail);        
         let transformedData= jobTransformer.jobData(extractedPostedJobs.results);
         transformedData["total"]=extractedPostedJobs.total;
-        
+        jobs=pagination.paginateResponse(transformedData,pageDetail);
 
         return{
             validator:true,
-            data:transformedData
+            data:jobs.data,
+            metadata:jobs.metadata
         }
 
         

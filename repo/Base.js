@@ -35,13 +35,6 @@ class Base {
 
 
 
-    // Common function will go here
-    // async findByUsername(username){
-    //    const extractedusers= await this.model.query()
-    //    .where("username",username);
-
-    //    return extractedusers; //return data or empty(array is created)
-    // }
 
     
     async checkAuthData(username,password){
@@ -62,18 +55,11 @@ class Base {
     async getNameById(userId){
         let name=await this.model.query()
         .where("id",userId);
+    
         return name[0].name;
     }//nont to be merged
 
 
-    // async deleteByUuid(uuid){
-    //     let deletedRecord=await this.model.query()
-    //     .delete()
-    //     .where("uuid",uuid);
-    //         if(deletedRecord==0){
-    //             console.log("XXXX!!!XXXX:: no changes at  deletebyuuid");
-    //         }
-    // }
 
     async delete(field,fieldValue){
         let count=await this.model.query()

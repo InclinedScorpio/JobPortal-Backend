@@ -32,9 +32,9 @@ let forgetPassword=async (req,res,next)=>{
     let checkAndReset=await processUserDetails(email);
     if(checkAndReset.value){
         res.success(202,"Otp sent Successfully",checkAndReset.data);
+    } else {
+        res.error(422,"Failed",checkAndReset.message);
     }
-    res.error(422,"Failed",checkAndReset.message);
-
 }
 
 let resetPassword=async(req,res,next)=>{

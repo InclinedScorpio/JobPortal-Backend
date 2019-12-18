@@ -42,7 +42,9 @@ class Job extends Base{
     async getAllJobs(user){
         return await this.model.query()
         .select("job_title","job_description","uuid")
-        .page(user.page - 1,user.limit);
+        .orderBy("created_at","desc")
+        .page(user.page - 1,user.limit)
+
 
     }
 
@@ -50,7 +52,9 @@ class Job extends Base{
         return await this.model.query()
         .select("job_title","job_description","uuid")
         .where("recruiter_id",recruiterId)
+        .orderBy("created_at", 'desc')
         .page(user.page-1,user.limit);
+
     }
 
 }

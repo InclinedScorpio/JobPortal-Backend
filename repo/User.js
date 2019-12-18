@@ -16,7 +16,9 @@ class User extends Base{
 
     async appliedCandidates(candidates){
         return await this.model.query()
-        .whereIn("id",candidates); //no base beacuse id specified differently.
+        .whereIn("id",candidates)
+        .orderBy("created_at", 'desc');
+        //no base beacuse id specified differently.
     }
 
 

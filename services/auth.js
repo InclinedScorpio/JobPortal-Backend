@@ -140,6 +140,7 @@ module.exports={
     }
     //email exists--Generate OTP--------------------
     const secret = process.env.OTP_SECRET;
+  
     const token = parseInt(otplib.authenticator.generate(secret));
     //insert the token in db
     const saveOTP=await OtpRepo.create({otp: token,email: userName});

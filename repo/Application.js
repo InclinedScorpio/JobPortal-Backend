@@ -8,6 +8,7 @@ class Application extends Base{
 
     async getAppliedJobs(candidateId){ 
         let jobFromApplication=await this.model.query()
+        .orderBy("created_at", 'desc')
         .where("user_id",candidateId)
         .select("job_id");
 
@@ -16,16 +17,7 @@ class Application extends Base{
 }
 
 
-    // async addApplication(userId,jobId,uuid){
-    //     let addedApplication=await this.model.query()
-    //     .insert({
-    //         user_id:userId,
-    //         job_id:jobId,
-    //         uuid:uuid
-    //     });
-    //     return addedApplication;
-    // }
-
+   
     async isApplicationExists(userId,jobId){
         let application=await this.model.query()
         .where("user_id",userId)
@@ -36,6 +28,7 @@ class Application extends Base{
 
     async getApplicants(jobId){
         let candidates=await this.model.query()
+        .orderBy("created_at", 'desc')
         .select("user_id")
         .where("job_id",jobId);
 
@@ -44,6 +37,7 @@ class Application extends Base{
 
     async getAllApplications(pageDetails){
         let applications=await this.model.query()
+        .orderBy("created_at", 'desc')
         .page(pageDetails.page -1 ,pageDetails.limit);
 
         return applications;
