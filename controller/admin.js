@@ -23,14 +23,14 @@ const extractedApplications=async(req,res,next)=>{
 const extractedCandidates=async(req,res,next)=>{
     const allCandidates=await getAllCandidates(req);
     if(allCandidates.validator){
-        res.success(200,"Candidates Retrieved",allCandidates.data);
+        res.success(200,"Candidates Retrieved",allCandidates.data,allCandidates.metadata);
     }
 }
 const extractedRecruiters=async(req,res,next)=>{
     const allRecruiters=await getAllRecruiters(req);
 
     if(allRecruiters.validator){
-        res.success(200,"Recruiters Retrieved",allRecruiters.data);
+        res.success(200,"Recruiters Retrieved",allRecruiters.data,allRecruiters.metadata);
     }
 }
 

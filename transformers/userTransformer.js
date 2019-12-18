@@ -27,8 +27,20 @@ let userDetailToAdmin=(userData)=>{
         name:userData.name,
         username:userData.username,
     }
-
     return transformedUserData;
+}
+
+let userDetailsToSend=(userData)=>{
+
+    for(let i=0;i<userData.length;i++)
+    {
+        userData[i]["id"]=userData[i]["uuid"];
+        delete userData[i].uuid;
+    }
+    let temp={};
+    temp["results"]=userData;
+    return temp;
+
 }
 
 
@@ -36,7 +48,8 @@ let userDetailToAdmin=(userData)=>{
 module.exports={
     validUser,
     validSignIn,
-    userDetailToAdmin
+    userDetailToAdmin,
+    userDetailsToSend
 }
 
 

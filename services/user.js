@@ -31,14 +31,21 @@ module.exports={
 
 
         let allCandidates=await userRepo.findAndSelect("role",0,["uuid","name","username"],pageDetail);
-
-        allCandidates["total"]=allCandidates.total;
+        let transformedData=transformer.userDetailsToSend(allCandidates.results);
+        transformedData["total"]=allCandidates.total;
         allCandidates=pagination.paginateResponse(allCandidates,pageDetail);
 
 
 
+        //temp
+        // let allJobs=await jobRepo.getAllJobs(pageDetail);
+        // let trasformedData=jobTransformer.jobData(allJobs.results);
+        // trasformedData["total"]=allJobs.total;
+        // allJobs=pagination.paginateResponse(trasformedData,pageDetail);
+
         return {
-            data:allCandidates,
+            data:allCandidates.data,
+            metadata:allCandidates.metadata,
             validator:true
         }
     },
@@ -56,12 +63,16 @@ module.exports={
 
 
         let allRecruiters=await userRepo.findAndSelect("role",1,["uuid","name","username"],pageDetail);
-        allRecruiters["total"]=allRecruiters.total;
+        // allRecruiters["total"]=allRecruiters.total;
+        // allRecruiters=pagination.paginateResponse(allRecruiters,pageDetail);
+
+        let transformedData=transformer.userDetailsToSend(allRecruiters.results);
+        transformedData["total"]=allRecruiters.total;
         allRecruiters=pagination.paginateResponse(allRecruiters,pageDetail);
 
-
         return {
-            data:allRecruiters,
+            data:allRecruiters.data,
+            metadata:allRecruiters.metadata,
             validator:true
         }
     },
