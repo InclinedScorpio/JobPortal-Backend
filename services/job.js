@@ -9,6 +9,8 @@ const ApplicationRepo=require("../repo/Application");
 const validator=require("../validators/jobValidator");
 const pagination=require("../transformers/pagination");
 
+const jobTransformer=require("../transformers/jobTransformer");
+
 jobRepo=new JobRepo(Job);
 userRepo=new UserRepo(User);
 applicationRepo=new ApplicationRepo(Application);
@@ -31,12 +33,13 @@ module.exports={
                 }
 
               let allJobs=await jobRepo.getAllJobs(pageDetail);
-              allJobs["total"]=allJobs.total;
-              allJobs=pagination.paginateResponse(allJobs,pageDetail);
-      
+              let trasformedData=jobTransformer.jobData(allJobs.results);
+              trasformedData["total"]=allJobs.total;
+              allJobs=pagination.paginateResponse(trasformedData,pageDetail);
       
             return{
-                data:allJobs
+                data:allJobs.data,
+                metadata:allJobs.metadata
             }
 
         }
@@ -56,15 +59,15 @@ module.exports={
         for(let i=0;i<extractedJobs.length;i++){     
                   arr.push(extractedJobs[i].job_id); }//refactor
 
+        
         let availableJobs=await jobRepo.getAvailableJobs(arr,pageDetail);
-        availableJobs["total"]=availableJobs.total;
-        availableJobs=pagination.paginateResponse(availableJobs,pageDetail);
-        // Remove uuid
-        // console.log(availableJobs.results);
-        // const availableJobsAre=transformAll(availableJobs);
-        // console.log(availableJobs);
+        let transformedData=jobTransformer.jobData(availableJobs.results);
+        transformedData["total"]=availableJobs.total;
+        allJobs=pagination.paginateResponse(transformedData,pageDetail);
+
         return {
-             data:availableJobs          
+            data:allJobs.data,
+            metadata:allJobs.metadata        
         }
 
     },
@@ -93,9 +96,11 @@ module.exports={
             let generatedUuid=uuid();
             
             let addedApplication=await applicationRepo.create({user_id: userId.id, job_id: jobId.id,uuid: generatedUuid});//refactor
+            console.log("JJOBB IDDD::::",checkJobId);
+            let checkJob= jobTransformer.jobDataObject(checkJobId);
             //transform data here Check ??????
             return{                
-                data:checkJobId,
+                data:checkJob,
                 validator:true
             }
         }  //If doesn't Exist
@@ -107,7 +112,6 @@ module.exports={
 
 
     postNewJob:async(recruiterId,jobData)=>{
-        console.log("$$$$$$$$$$",jobData);
         //DO VALIDATION ERROR HERE
         let savedPassedData={
             title:jobData.title,
@@ -128,6 +132,7 @@ module.exports={
         }
         let recruiterID=await userRepo.getIdByuuid(recruiterId);
         jobData.recruiterid=recruiterID;
+
         //check if already data present.
         //but first validate the data...
         if(!(validator.validateJobData(jobData)).value){
@@ -137,7 +142,7 @@ module.exports={
             }
         }
 
-    
+        
         let isJobExists=await jobRepo.isJobExists(jobData);
         if(isJobExists.length>0){//job already posted
             return {
@@ -146,7 +151,7 @@ module.exports={
             }
         }
         jobData.uuid=uuid();
-        savedPassedData["uuid"]=jobData.uuid;
+        savedPassedData["id"]=jobData.uuid;
         
         let jobPosted=await jobRepo.create({
             recruiter_id:jobData.recruiterid.id, //refactor
@@ -175,14 +180,19 @@ module.exports={
         let candidateId = await userRepo.getIdByuuid(candidateUuid);
         let jobs = await candidateId.$relatedQuery("appliedjobs").page(parseInt(pageDetail.page - 1),parseInt(pageDetail.limit));
 
+        let transformedData=jobTransformer.jobData(jobs.results);
+        transformedData["total"]=jobs.total;
+        jobs=pagination.paginateResponse(transformedData,pageDetail);
 
-        jobs["total"]=jobs.total;
-        jobs=pagination.paginateResponse(jobs,pageDetail);
+
+        // jobs["total"]=jobs.total;
+        // jobs=pagination.paginateResponse(jobs,pageDetail);
         
 
 
         return {
-            data:jobs,
+            data:jobs.data,
+            metadata:jobs.metadata,
             validator:true,
         }
 
@@ -228,11 +238,6 @@ module.exports={
 
         
     }
-
-    
-
-    
-
 
 }
     

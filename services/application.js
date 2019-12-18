@@ -8,7 +8,7 @@ const UserRepo=require("../repo/User");
 const ApplicationRepo=require("../repo/Application");
 const transformer=require("../transformers/userTransformer");
 const pagination=require("../transformers/pagination");
-
+const jobTransformer=require("../transformers/jobTransformer");
 const validator=require("../validators/candidateValidator");
 
 jobRepo=new JobRepo(Job);
@@ -38,12 +38,22 @@ module.exports={
             }
         }
         let job = await jobRepo.getJobIdByUuid(jobUuid);
+        console.log("%%%%%%%",job);
+        //no job found
+        if(job===undefined){
+            return{
+                error:"job id doesn't exists",
+                validator:false
+            }
+        }
         let candidates=await job.$relatedQuery("candidates").page(pageDetail.page - 1,pageDetail,limit);
-        candidates["total"]=candidates.total;
-        candidates=pagination.paginateResponse(candidates,pageDetail);
+        let transformedData=jobTransformer.jobData(candidates.results);//data i thi
+        transformedData["total"]=candidates.total;
+        allJobs=pagination.paginateResponse(transformedData,pageDetail);
 
         return{
-                data:candidates,
+                data:allJobs.data,
+                metadata:allJobs.metadata,
                 validator:true
         }         
     },

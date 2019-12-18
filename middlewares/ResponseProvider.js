@@ -1,10 +1,11 @@
 //providing function for getting own modified response...
  const resposeProvider=(req,res,next)=>{  //check
-    res.success = (code=200, message="success", data) => {
+    res.success = (code=200, message="success", data, metadata) => {
         res.status(code).send({ 
             code,
             message,
-            data
+            data,
+            metadata
         });
     },
     res.error =(code=404,message="failed",errors)=>{

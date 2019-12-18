@@ -9,7 +9,7 @@ const {
 
 const getAllJobs = async (req, res, next) => {
   let jobData = await getJobs(req);
-  res.success(200, "Success", jobData.data);
+  res.success(200, "Success", jobData.data, jobData.metadata);
 };
 
 const applyToJob = async (req, res, next) => {
@@ -38,7 +38,7 @@ const appliedJobs=async(req,res,next)=>{
   let candidateUuid=req.headerData.userid;
   let getJobApplied=await jobsApplied(candidateUuid,req);
   if(getJobApplied.validator){
-    res.success(200,"Successfully extracted Jobs",getJobApplied.data);
+    res.success(200,"Successfully extracted Jobs",getJobApplied.data, getJobApplied.metadata);
     } else {
       res.error(404,"Failed to extract Jobs");
     }
@@ -49,7 +49,7 @@ const jobsByRecruiter=async(req,res,next)=>{
   let recruiterId=req.headerData.userid;
   let postedJobs=await jobsPosted(recruiterId,req);
   if(postedJobs.validator){
-    res.success(200,"Successfully extracted Posted Jobs",postedJobs.data);
+    res.success(200,"Successfully extracted Posted Jobs",postedJobs.data,postedJobs.metadata);
   }else{
     res.error(404,"Failed to extract postedJobs");
   }

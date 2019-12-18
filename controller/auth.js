@@ -43,8 +43,7 @@ let resetPassword=async(req,res,next)=>{
         res.success(200,"Success",resetResponse.data);
     }
     //ERROR ?? checkimm
-    
-    res.error(404,"Error",resetResponse.error);
+else{    res.error(404,"Error",resetResponse.error);}
 }
 
 
