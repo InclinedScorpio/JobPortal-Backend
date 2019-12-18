@@ -32,7 +32,7 @@ module.exports={
         if((isUserExist)!==undefined){
           let temp={
             code:422,
-            field:"username",
+            field:"Email",
             result:"Admin already added",
             token:null
           };
@@ -40,17 +40,18 @@ module.exports={
         }
       }
 
+
     const hash = await bcrypt.hash(signupData.password, 10);
     signupData.password = hash;
     signupData.uuid=uuid();
 
  
-      let isUserExist=await userRepo.findAndSelect("username",signupData.username,[],0);
+      let isUserExist=await userRepo.findAndSelect("email",signupData.email,[],0);
       if(isUserExist.length>0){
           let temp={
             code:422,
-            field:"username",
-            result:"Username Already Exists",
+            field:"email",
+            result:"Email Already Exists",
             token:null
           };
           return temp;
@@ -68,10 +69,10 @@ module.exports={
       return userdata;
 
 
-
     }else{
       return validatedresponse;
     }
+    
   },
 
 
@@ -86,7 +87,7 @@ module.exports={
               return validateData;
             }
 
-            let isUserExist=await userRepo.findOne('username',signinData.username);
+            let isUserExist=await userRepo.findOne('email',signinData.email);
 
             if(isUserExist){//USER EXISTS!
               //check username and password
@@ -107,7 +108,7 @@ module.exports={
                       value:false,
                     };
                   }
-            }else{//NO SUCH USERNAME
+            }else{//NO SUCH email
               return {
                 code:404,
                 error:"user doesn't exists",
@@ -165,7 +166,7 @@ module.exports={
           value:false
         }
     }
-    let username=resetData.username;
+    let username=resetData.email;
     let otp=parseInt(resetData.otp);
     let password=resetData.password;
 
@@ -208,9 +209,6 @@ module.exports={
       },
       value:true
     }
-
-
-
 
   }
 

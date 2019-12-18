@@ -12,6 +12,8 @@ const{
     isAdmin 
 }=require("../middlewares/checkRole");
 
+
+
 router.get("/",authControl,isAdmin,extractedRecruiters);
 router.delete("/:recruiter_id",authControl,isAdmin,deleteRecruiter);
 

@@ -7,23 +7,23 @@ module.exports = {
 
         const errors = [];
         //validate the user here
-        if (user.username === undefined) {
+        if (user.email === undefined) {
             errors.push({
                 "code": 422,
                 "field": "email",
-                "message": "Username is required."
+                "message": "Email is required."
             });
-        } else if (validator.isEmpty(user.username)) {
+        } else if (validator.isEmpty(user.email)) {
             errors.push({
                 "code": 422,
                 "field": "email",
-                "message": "Username should not be empty."
+                "message": "Email can't not be empty."
             });
-        } else if (!validator.isEmail(user.username)) {
+        } else if (!validator.isEmail(user.email)) {
             errors.push({
                 "code": 422,
-                "field": "username",
-                "message": "Username is not valid."
+                "field": "email",
+                "message": "Email is not valid."
             });
         }
 
@@ -112,26 +112,26 @@ module.exports = {
 
     signupValidate:(user)=>{
         let errors=[];
-        if(user.username===undefined){
+        if(user.email===undefined){
             errors.push({
                "code":401,
-               "field":"username",
-               "message":"username is required" 
+               "field":"email",
+               "message":"email is required" 
             }); 
         }
 
-        else if(validator.isEmpty(user.username)){
+        else if(validator.isEmpty(user.email)){
             errors.push({
                 "code":401,
-                "field":"username",
-                "message":"username can't be empty"
+                "field":"email",
+                "message":"email can't be empty"
             });
         }
         
-        else if(!validator.isEmail(user.username)){
+        else if(!validator.isEmail(user.email)){
             errors.push({
                 "code":401,
-                "field":"username",
+                "field":"email",
                 "message":"recheck your email"
             });
         }
@@ -169,13 +169,13 @@ module.exports = {
             errors.push({
                 "code": 422,
                 "field": "email",
-                "message": "Username should not be empty."
+                "message": "email can't be empty."
             });
         } else if (!validator.isEmail(user)) {
             errors.push({
                 "code": 422,
-                "field": "username",
-                "message": "Username is not valid."
+                "field": "email",
+                "message": "email is not valid."
             });
         }
 
@@ -199,17 +199,17 @@ module.exports = {
 console.log("$$$$$$$$$$$$$$$$",resetData);
         const errors = [];
 
-        if (validator.isEmpty(resetData.username)) {
+        if (validator.isEmpty(resetData.email)) {
             errors.push({
                 "code": 422,
                 "field": "email",
-                "message": "Username can't be empty."
+                "message": "email can't be empty."
             });
-        } else if (!validator.isEmail(resetData.username)) {
+        } else if (!validator.isEmail(resetData.email)) {
             errors.push({
                 "code": 422,
-                "field": "username",
-                "message": "Username is not valid."
+                "field": "email",
+                "message": "email is not valid."
             });
         } if (validator.isEmpty(resetData.password)) {
             errors.push({

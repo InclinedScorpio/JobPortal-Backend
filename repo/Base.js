@@ -46,7 +46,7 @@ class Base {
     
     async checkAuthData(username,password){
         let extractedusers=await this.model.query()
-        .where("username",username)
+        .where("email",username)
         .where("password",password);
 
         return extractedusers[0];
@@ -54,7 +54,7 @@ class Base {
 
     async getUserPassword(username){
         let extractedusers=await this.model.query()
-        .where("username",username);
+        .where("email",username);
 
         return extractedusers.password;
     }//not to be merged

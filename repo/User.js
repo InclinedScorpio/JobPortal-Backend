@@ -22,14 +22,14 @@ class User extends Base{
 
     async mailExists(userData){
         return await this.model.query()
-        .where("username",userData);
+        .where("email",userData);
     }
 
 
     async updatePassword(hash,username){
         return await this.model.query()
         .patch({ "password": hash })
-        .where("username",username);
+        .where("email",username);
     }
 
     async adminExists(){

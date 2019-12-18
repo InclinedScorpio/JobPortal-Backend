@@ -17,7 +17,7 @@ let signup = async (req,res,next) => {
 
 let signin= async (req,res,next) => {
 
-    let userData=await authSignin(req.body); //get username,pass
+    let userData=await authSignin(req.body); //get email,pass
     if(userData.value){//SUCCESS
         res.success(200,"Signin Successful",userData);
     }else{
@@ -25,11 +25,11 @@ let signin= async (req,res,next) => {
     }
 }
 
-
+// we are sending usernam->email changed
 
 let forgetPassword=async (req,res,next)=>{
-    let username=req.body.username;
-    let checkAndReset=await processUserDetails(username);
+    let email=req.body.email;
+    let checkAndReset=await processUserDetails(email);
     if(checkAndReset.value){
         res.success(202,"Otp sent Successfully",checkAndReset.data);
     }

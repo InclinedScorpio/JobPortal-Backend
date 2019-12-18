@@ -1,9 +1,10 @@
 
 let validUser=(userData)=>{
    usertransformdata={
-       id:userData.username,
+       id:userData.uuid,
        token:userData.token,
-       role:userData.role
+       role:userData.role,
+       email:userData.email
    }
     return usertransformdata;
 }
@@ -11,7 +12,7 @@ let validUser=(userData)=>{
 let validSignIn=(userData)=>{
     usertransformdata={
         id:userData.uuid,
-        username:userData.username,
+        email:userData.email,
         name:userData.name,
         role:userData.role,
         token:userData.token,
@@ -25,7 +26,7 @@ let userDetailToAdmin=(userData)=>{
     transformedUserData={
         id:userData.uuid,
         name:userData.name,
-        username:userData.username,
+        email:userData.email,
     }
     return transformedUserData;
 }

@@ -30,7 +30,7 @@ module.exports={
                 }
 
 
-        let allCandidates=await userRepo.findAndSelect("role",0,["uuid","name","username"],pageDetail);
+        let allCandidates=await userRepo.findAndSelect("role",0,["uuid","name","email"],pageDetail);
         let transformedData=transformer.userDetailsToSend(allCandidates.results);
         transformedData["total"]=allCandidates.total;
         allCandidates=pagination.paginateResponse(allCandidates,pageDetail);
@@ -62,7 +62,7 @@ module.exports={
         }
 
 
-        let allRecruiters=await userRepo.findAndSelect("role",1,["uuid","name","username"],pageDetail);
+        let allRecruiters=await userRepo.findAndSelect("role",1,["uuid","name","email"],pageDetail);
         // allRecruiters["total"]=allRecruiters.total;
         // allRecruiters=pagination.paginateResponse(allRecruiters,pageDetail);
 

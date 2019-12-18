@@ -31,6 +31,7 @@ module.exports={
                     page:parseInt(page),
                     offset:parseInt(offset)
                 }
+                console.log("^^^^^^^^^^^^^^",pageDetail);
 
               let allJobs=await jobRepo.getAllJobs(pageDetail);
               let trasformedData=jobTransformer.jobData(allJobs.results);
@@ -185,10 +186,7 @@ module.exports={
         jobs=pagination.paginateResponse(transformedData,pageDetail);
 
 
-        // jobs["total"]=jobs.total;
-        // jobs=pagination.paginateResponse(jobs,pageDetail);
-        
-
+      
 
         return {
             data:jobs.data,
@@ -228,16 +226,20 @@ module.exports={
                     page:parseInt(page),
                     offset:parseInt(offset)
                 }
-                console.log("XXXXXXXX::GOT IN SERVICE");
+                // console.log("XXXXXXXX::GOT IN SERVICE");
         let recruiterId=await userRepo.getIdByuuid(recruiterUuid);
         let extractedPostedJobs=await jobRepo.getJobsPosted(recruiterId.id,pageDetail);
+        
+        let transformedData= jobTransformer.jobData(extractedPostedJobs.results);
+        transformedData["total"]=extractedPostedJobs.total;
+        
+
         return{
             validator:true,
-            data:extractedPostedJobs
+            data:transformedData
         }
 
         
     }
 
-}
-    
+} 
