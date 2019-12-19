@@ -121,7 +121,8 @@ module.exports={
     validateUsername=uservalidator.validateUser(userName);
     if(!validateUsername.value){
       return{
-        message:"Email is invalid, try again"
+        message:"Email is invalid, try again",
+        value :false
       }
     }
 

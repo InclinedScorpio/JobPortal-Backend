@@ -31,7 +31,7 @@ module.exports={
                     page:parseInt(page),
                     offset:parseInt(offset)
                 }
-                console.log("^^^^^^^^^^^^^^",pageDetail);
+                // console.log("^^^^^^^^^^^^^^",pageDetail);
 
               let allJobs=await jobRepo.getAllJobs(pageDetail);
               let trasformedData=jobTransformer.jobData(allJobs.results);

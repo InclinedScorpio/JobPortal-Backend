@@ -11,12 +11,12 @@ module.exports={
         console.log("%%%$$$%%%%$$$%%%$$$",userName);
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
-        host: "smtp.mailtrap.io",
-        port: 25,
+        host: process.env.MAILTRAP_HOST,
+        port: process.env.MAILTRAP_PORT,
         secure: false, // true for 465, false for other ports
         auth: {
-        user: "be517c105d849c", // generated ethereal user
-        pass: "59f9c090d72129" // generated ethereal password
+        user: process.env.MAILTRAP_AUTH_USER, // generated ethereal user
+        pass: process.env.MAILTRAP_AUTH_PASS // generated ethereal password
         }
         });
         var today = new Date();
