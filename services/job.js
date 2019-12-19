@@ -116,17 +116,24 @@ module.exports={
         let savedPassedData={
             title:jobData.title,
             description:jobData.description,
-            uuid:jobData.uuid
+            uuid:jobData.uuid,
+            companyname:jobData.companyname
         }
-        if(savedPassedData.description.length>1000){
+        if(savedPassedData.description.length>1500){
             return{
-                error:"description can't be more than 1000 words",
+                error:"description can't be more than 1500 words",
                 validator:false
             }
         }
         if(savedPassedData.title.length>100){
             return{
                 error:"title can't be more than 100 words",
+                validator:false
+            }
+        }
+        if(savedPassedData.companyname==null || savedPassedData==undefined){
+            return{
+                error:"company name is required to proceed",
                 validator:false
             }
         }
@@ -152,12 +159,12 @@ module.exports={
         }
         jobData.uuid=uuid();
         savedPassedData["id"]=jobData.uuid;
-        
         let jobPosted=await jobRepo.create({
             recruiter_id:jobData.recruiterid.id, //refactor
             job_title:jobData.title,
             job_description:jobData.description,
-            uuid:jobData.uuid
+            uuid:jobData.uuid,
+            companyname:jobData.companyname
         });
         return {
             data:savedPassedData,

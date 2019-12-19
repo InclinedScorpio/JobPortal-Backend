@@ -4,7 +4,8 @@ let validUser=(userData)=>{
        id:userData.uuid,
        token:userData.token,
        role:userData.role,
-       email:userData.email
+       email:userData.email,
+       name:userData.name
    }
     return usertransformdata;
 }

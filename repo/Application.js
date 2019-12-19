@@ -55,6 +55,7 @@ class Application extends Base{
     }
 
     async deleteGivenJobs(jobs){
+        console.log(jobs);
         let count =await this.model.query()
         .delete()
         .whereIn("job_id",jobs);

@@ -15,7 +15,7 @@ class Job extends Base{
     async getAvailableJobs(appliedJobs,pageDetails){
         let availableJobs=await this.model.query()
         .whereNotIn("id",appliedJobs)
-        .select("uuid","job_title","job_description")
+        .select("uuid","job_title","job_description","companyname")
         .page(pageDetails.page -1 ,pageDetails.limit);
      
         return availableJobs;
@@ -36,12 +36,13 @@ class Job extends Base{
         return await this.model.query()
         .where("recruiter_id",jobData.recruiterid.id)//changes done here check
         .where("job_title",jobData.title)
-        .where("job_description",jobData.description);
+        .where("job_description",jobData.description)
+        .where("companyname",jobData.companyname);
     }
 
     async getAllJobs(user){
         return await this.model.query()
-        .select("job_title","job_description","uuid")
+        .select("job_title","job_description","uuid","companyname")
         .orderBy("created_at","desc")
         .page(user.page - 1,user.limit)
 

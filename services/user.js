@@ -120,13 +120,16 @@ module.exports={
                 validator:false
             };
         }
+        console.log(extractedRecruiter.id)
         //id belongs to recruiter and present->extract jobs
-        let jobsofRecruiter=await jobRepo.findAndSelect("id",extractedRecruiter.id,["id"],0);
+        let jobsofRecruiter=await jobRepo.findAndSelect("recruiter_id",extractedRecruiter.id,["id"],0);
         let arr=[];
         for(let i=0;i<jobsofRecruiter.length;i++)
         {
             arr.push(jobsofRecruiter[i].id);
         }
+
+        console.log('arr',arr, jobsofRecruiter);
 
         let deletedApplications=await applicationRepo.deleteGivenJobs(arr);
         let deletedJobs=await jobRepo.delete("recruiter_id",extractedRecruiter.id);
