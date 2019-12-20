@@ -119,9 +119,9 @@ module.exports={
             uuid:jobData.uuid,
             companyname:jobData.companyname
         }
-        if(savedPassedData.description.length>1500){
+        if(savedPassedData.description.length>1000){
             return{
-                error:"description can't be more than 1500 words",
+                error:"description can't be more than 1000 words",
                 validator:false
             }
         }
@@ -161,8 +161,8 @@ module.exports={
         savedPassedData["id"]=jobData.uuid;
         let jobPosted=await jobRepo.create({
             recruiter_id:jobData.recruiterid.id, //refactor
-            job_title:jobData.title,
             job_description:jobData.description,
+            job_title:jobData.title,
             uuid:jobData.uuid,
             companyname:jobData.companyname
         });
@@ -185,7 +185,7 @@ module.exports={
             offset:offset
         }
         let candidateId = await userRepo.getIdByuuid(candidateUuid);
-        let jobs = await candidateId.$relatedQuery("appliedjobs").page(parseInt(pageDetail.page - 1),parseInt(pageDetail.limit));
+        let jobs = await candidateId.$relatedQuery("appliedjobs").orderBy("created_at","desc").page(parseInt(pageDetail.page - 1),parseInt(pageDetail.limit));
 
         let transformedData=jobTransformer.jobData(jobs.results);
         transformedData["total"]=jobs.total;

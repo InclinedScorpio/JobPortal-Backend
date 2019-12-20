@@ -16,6 +16,7 @@ class Job extends Base{
         let availableJobs=await this.model.query()
         .whereNotIn("id",appliedJobs)
         .select("uuid","job_title","job_description","companyname")
+        .orderBy("created_at","desc")
         .page(pageDetails.page -1 ,pageDetails.limit);
      
         return availableJobs;
@@ -44,7 +45,7 @@ class Job extends Base{
         return await this.model.query()
         .select("job_title","job_description","uuid","companyname")
         .orderBy("created_at","desc")
-        .page(user.page - 1,user.limit)
+        .page(user.page - 1,user.limit);
 
 
     }

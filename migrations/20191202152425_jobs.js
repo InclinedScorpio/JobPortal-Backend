@@ -4,7 +4,7 @@ exports.up = function(knex) {
       table.increments("id").primary();
       table.integer("recruiter_id").notNullable().unsigned();
       table.string("job_title").notNullable();
-      table.string("job_description").notNullable()
+      table.string("job_description",1000).notNullable()
       table.string("companyname").notNullable()
       table.string("uuid");
 

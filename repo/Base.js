@@ -21,12 +21,14 @@ class Base {
         if(pageDetail==0){
             let users=await this.model.query()
             .where(field,value)
+            .orderBy("created_at", 'desc')
             .select(attributes);
             return users;
         }
 
         let users=await this.model.query()
         .where(field,value)
+        .orderBy("created_at", 'desc')
         .select(attributes)
         .page(pageDetail.page - 1,pageDetail.limit);
 
