@@ -168,7 +168,7 @@ module.exports={
     let EmailExists=await OtpRepo.checkUsernameAndOTP(username,otp);
     if(typeof(EmailExists)=="undefined"){
       return{
-        error:"No record Found",
+        error:"Wrong OTP entered",
         value:false
       }
     }
