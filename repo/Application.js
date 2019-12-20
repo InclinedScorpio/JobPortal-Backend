@@ -77,6 +77,13 @@ class Application extends Base{
       }
   }
 
+  async runRelatedQuery(candidate,appliedjobs,pageDetail){
+     let jobs = await candidate.$relatedQuery(appliedjobs).orderBy("applications.created_at","desc").page(parseInt(pageDetail.page - 1),parseInt(pageDetail.limit));
+
+     return jobs;
+
+}
+
 
 
 }

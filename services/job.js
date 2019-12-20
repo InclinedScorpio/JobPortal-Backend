@@ -185,7 +185,9 @@ module.exports={
             offset:offset
         }
         let candidateId = await userRepo.getIdByuuid(candidateUuid);
-        let jobs = await candidateId.$relatedQuery("appliedjobs").orderBy("applications.created_at","desc").page(parseInt(pageDetail.page - 1),parseInt(pageDetail.limit));
+        // let 
+
+        let jobs = await applicationRepo.runRelatedQuery(candidateId,"appliedjobs",pageDetail)
 
         let transformedData=jobTransformer.jobData(jobs.results);
         transformedData["total"]=jobs.total;
